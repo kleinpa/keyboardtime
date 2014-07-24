@@ -7,16 +7,16 @@ from sqlalchemy import Column, Integer, String, DateTime, Numeric
 schema_hash = hashlib.md5(open(os.path.abspath(__file__), 'r').read()).hexdigest()
 Base = declarative_base()
 
-class Action(Base):
-    __tablename__ = 'actions'
+class ForegroundApplication(Base):
+    __tablename__ = 'foreground_applications'
 
     id = Column(Integer, primary_key=True)
     start = Column(DateTime)
-    program = Column(String)
+    application = Column(String)
     hostname = Column(String)
     activeness = Column(Numeric)
     duration = Column(Integer)
 
     def __repr__(self):
-        return "<Action(start='%s', program='%s', duration='%s')>" % (
-            self.start, self.program, self.duration)
+        return "<Application(start='%s', application='%s', duration='%s')>" % (
+            self.start, self.application, self.duration)

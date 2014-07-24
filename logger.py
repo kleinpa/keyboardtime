@@ -8,29 +8,30 @@ import db
 
 IDLE_SECONDS = 60
 
-current_action = None
+current_foreground = None
 act_sum = 0
 act_count = 0
 def log_action(data):
-    global current_action, act_sum, act_count
-    program = data[0]
+    global current_foreground, act_sum, act_count
+    application = data[0]
     idle_time = data[1]
     idle = idle_time > IDLE_SECONDS
 
 
-    if current_action and (idle or not current_action.program == program):
-        current_action.duration = (datetime.datetime.now() - current_action.start).total_seconds()
-        current_action.activeness = act_count/act_sum if act_sum>1 else 0
+    if current_foreground and (idle or not current_foreground.application == application):
+        current_foreground.duration = (datetime.datetime.now() - current_foreground.start).total_seconds()
+        current_foreground.activeness = act_count/act_sum if act_sum>1 else 0
 
-        db.session.add(current_action)
-        db.session.commit()
+        if current_foreground.duration >= 1 and current_foreground.application != "":
+            db.session.add(current_foreground)
+            db.session.commit()
 
-        current_action = None
+        current_foreground = None
 
-    if not current_action and not idle:
-        print program
-        current_action = db.Action(
-            program = program,
+    if not current_foreground and not idle:
+        print application
+        current_foreground = db.ForegroundApplication(
+            application = application,
             start = datetime.datetime.now(),
             hostname = socket.gethostname())
         act_sum = idle_time
@@ -43,4 +44,4 @@ def log_action(data):
 
 while(True):
     log_action([foreground.window_name(), foreground.get_idle_duration()])
-    time.sleep(.2)
+    time.sleep(1)
