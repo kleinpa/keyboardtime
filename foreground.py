@@ -21,7 +21,7 @@ def window_name():
     path = (ctypes.c_char*MAX_PATH)()
     GetProcessImageFileName(hProcess, path, MAX_PATH)>0
 
-    return os.path.splitext(os.path.basename(path.value))[0]
+    return os.path.splitext(os.path.basename(path.value))[0].decode('UTF-8')
 
 
 from ctypes import Structure, windll, c_uint, sizeof, byref

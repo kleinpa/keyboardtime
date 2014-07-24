@@ -29,7 +29,7 @@ def log_action(data):
         current_foreground = None
 
     if not current_foreground and not idle:
-        print application
+        print(application)
         current_foreground = db.ForegroundApplication(
             application = application,
             start = datetime.datetime.now(),
@@ -40,7 +40,7 @@ def log_action(data):
         act_sum += idle_time
         act_count += 1
 
-    #print data
+    #print(data)
 
 while(True):
     log_action([foreground.window_name(), foreground.get_idle_duration()])
