@@ -4,7 +4,6 @@ import hashlib
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, Integer, String, DateTime, Numeric
 
-schema_hash = hashlib.md5(open(os.path.abspath(__file__), 'rb').read()).hexdigest()
 Base = declarative_base()
 
 class ForegroundApplication(Base):

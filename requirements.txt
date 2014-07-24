@@ -1,2 +1,3 @@
 appdirs
 sqlalchemy
+py2exe

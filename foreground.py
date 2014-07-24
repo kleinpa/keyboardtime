@@ -23,20 +23,17 @@ def window_name():
 
     return os.path.splitext(os.path.basename(path.value))[0].decode('UTF-8')
 
-
-from ctypes import Structure, windll, c_uint, sizeof, byref
-
-
-
 def get_idle_duration():
     GetLastInputInfo = ctypes.windll.user32.GetLastInputInfo
+    GetTickCount = ctypes.windll.kernel32.GetTickCount
+
     class LASTINPUTINFO(ctypes.Structure):
         _fields_ = [
-            ('cbSize', c_uint),
-            ('dwTime', c_uint),
+            ('cbSize', ctypes.c_uint),
+            ('dwTime', ctypes.c_uint),
         ]
     lastInputInfo = LASTINPUTINFO()
-    lastInputInfo.cbSize = sizeof(lastInputInfo)
-    GetLastInputInfo(byref(lastInputInfo))
-    millis = windll.kernel32.GetTickCount() - lastInputInfo.dwTime
+    lastInputInfo.cbSize = ctypes.sizeof(lastInputInfo)
+    GetLastInputInfo(ctypes.byref(lastInputInfo))
+    millis = GetTickCount() - lastInputInfo.dwTime
     return millis / 1000.0
