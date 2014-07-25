@@ -2,18 +2,15 @@ import os
 import sys
 import appdirs
 
+import software_info
 from schema import *
 
-SOFTWARE_INFO_AUTHOR="Peter Klein"
-SOFTWARE_INFO_NAME="Metrics"
-
-data_dir = appdirs.user_data_dir(SOFTWARE_INFO_NAME,SOFTWARE_INFO_AUTHOR,"0.1")
+data_dir = appdirs.user_data_dir(software_info.name,software_info.author,software_info.version)
 if not os.path.exists(data_dir):os.makedirs(data_dir)
 
-db_file = os.path.join(data_dir,"metrics.db3")
+db_file = os.path.join(data_dir,"{0}.db3".format(software_info.exe))
 
 print("Using database: {0}".format(db_file))
-
 
 # SQLAlchemy Init
 from sqlalchemy import create_engine

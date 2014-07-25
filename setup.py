@@ -1,19 +1,22 @@
 from distutils.core import setup
+import datetime
 import py2exe
+
+import software_info
 
 class Target:
     def __init__(self, **kw):
         self.__dict__.update(kw)
         # for the versioninfo resources
-        self.version = "0.5.0"
-        self.company_name = "Beckman Coulter"
-        self.copyright = "Beckman Coulter"
-        self.name = "Metrics Logger"
+        self.version = software_info.version
+        self.company_name = software_info.company_name
+        self.copyright = software_info.copyright
+        self.name = software_info.description
 
 logger = Target(
-    description = "A Metrics Logger",
+    description = software_info.description,
     script = "logger.py",
-    dest_base = "metrics"
+    dest_base = software_info.exe
     )
 
 setup(
@@ -22,17 +25,13 @@ setup(
         'optimize': 2,
         'bundle_files': 1,
         'dist_dir': 'dist',
-        'dll_excludes': [
-            'msvcp90.dll',
-            'w9xpopen.exe'
-        ],
-        'includes': [
-            #'encodings',
-            'codecs',
-            'sqlalchemy'
-        ],
+        'dll_excludes': [],
+        'includes': [],
         'excludes': [
+            '_ssl','win32ui'
         ]}},
-    console=[logger],
-    zipfile=None
+    windows=[logger],
+    zipfile=None,
+    author=software_info.author,
+    version=software_info.version
     )
