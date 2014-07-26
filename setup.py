@@ -2,21 +2,21 @@ from distutils.core import setup
 import datetime
 import py2exe
 
-import software_info
+from software_info import info
 
 class Target:
     def __init__(self, **kw):
         self.__dict__.update(kw)
         # for the versioninfo resources
-        self.version = software_info.version
-        self.company_name = software_info.company_name
-        self.copyright = software_info.copyright
-        self.name = software_info.description
+        self.version = info['version']
+        self.company_name = info['company_name']
+        self.copyright = info['copyright']
+        self.name = info['description']
 
 logger = Target(
-    description = software_info.description,
+    description = info['description'],
     script = "logger.py",
-    dest_base = software_info.exe
+    dest_base = info['exe']
     )
 
 setup(
@@ -32,6 +32,6 @@ setup(
         ]}},
     windows=[logger],
     zipfile=None,
-    author=software_info.author,
-    version=software_info.version
+    author=info['author'],
+    version=info['version']
     )

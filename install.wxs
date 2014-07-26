@@ -1,0 +1,46 @@
+<?xml version='1.0' encoding='utf-8'?>
+<Wix xmlns='http://schemas.microsoft.com/wix/2006/wi'>
+    <Product Name='$(var.si_name) $(var.si_version)' Id='451A2652-ABF7-49C7-BA98-B0B677442A05' UpgradeCode='92891133-407C-43FE-874C-D28945F58DEE'
+        Language='1033' Codepage='1252' Version='$(var.si_version)' Manufacturer='$(var.si_company_name)'>
+
+        <Package Id='*' Keywords='Installer' Description="$(var.si_description)"
+            Comments='$(var.si_copyright)' Manufacturer='Acme Ltd.'
+            InstallerVersion='100' Languages='1033' Compressed='yes' SummaryCodepage='1252' />
+
+        <Media Id='1' Cabinet='Sample.cab' EmbedCab='yes' />
+
+        <Directory Id='TARGETDIR' Name='SourceDir'>
+            <Directory Id='ProgramFilesFolder'>
+                <Directory Id='CompanyDir' Name='$(var.si_company_name)'>
+                    <Directory Id='ApplicationDir' Name='$(var.si_name)'>
+                        <Directory Id='INSTALLDIR' Name='$(var.si_version)'>
+                        </Directory>
+                    </Directory>
+                </Directory>
+            </Directory>
+        </Directory>
+
+        <DirectoryRef Id='INSTALLDIR'>
+            <Component Id='cmp_$(var.si_exe).exe' Guid='1973F8E1-151F-4964-BE78-3BBA7F1411AF'>
+                <File Id='$(var.si_exe).exe' Source='dist/$(var.si_exe).exe' KeyPath='yes' />
+            </Component>
+            <Component Id='cmp_sqlite3.dll' Guid='1908B204-BED1-4601-BBA0-2D09C6B8070B'>
+                <File Id='sqlite3.dll' Source='dist/sqlite3.dll' KeyPath='yes' />
+            </Component>
+            <Component Id="RegistryEntries" Guid="74673E6A-5264-4277-A457-CE7C08341D07">
+                <RegistryKey Root="HKCU" Key="Software\Microsoft\Windows\CurrentVersion\Run">
+                    <RegistryValue Type="string" Name="$(var.si_name)" Value="[#$(var.si_exe).exe]" KeyPath="yes"/>
+                </RegistryKey>
+            </Component>
+        </DirectoryRef>
+
+        <Feature Id="Main" Level="1">
+            <ComponentRef Id="cmp_$(var.si_exe).exe" />
+            <ComponentRef Id="cmp_sqlite3.dll" />
+        </Feature>
+        <Feature Id="Autostart" Level="1">
+            <ComponentRef Id="RegistryEntries" />
+        </Feature>
+
+    </Product>
+</Wix>
