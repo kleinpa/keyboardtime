@@ -16,7 +16,8 @@ class Target:
 logger = Target(
     description = info['description'],
     script = "logger.py",
-    dest_base = info['exe']
+    dest_base = info['exe'],
+    icon_resources = [(1, "resources/app.ico")]
     )
 
 setup(
@@ -26,12 +27,16 @@ setup(
         'bundle_files': 1,
         'dist_dir': 'dist',
         'dll_excludes': [],
-        'includes': [],
+        'includes': [
+            'cherrypy.wsgiserver.wsgiserver3',
+        ],
         'excludes': [
-            '_ssl','win32ui'
+            #'win32ui'
         ]}},
     windows=[logger],
+    #console=[logger],
     zipfile=None,
     author=info['author'],
     version=info['version']
     )
+

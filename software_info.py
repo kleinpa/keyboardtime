@@ -4,7 +4,7 @@ info = {}
 
 info['exe'] = "metrics"
 info['name'] = "Metrics"
-info['description'] = "A Metrics Logger"
+info['description'] = "Metrics Logger"
 
 info['author'] = "Peter Klein"
 info['company_name'] = "Peter Klein"
@@ -12,7 +12,7 @@ info['copyright'] = "(c) {0}, {1}".format(datetime.datetime.now().year, info['co
 
 info['version'] = "1.0"
 
-
+# Some utility functions for accessing data from outside python
 if __name__ == '__main__':
     import argparse
     parser = argparse.ArgumentParser(description='Get the software information.')

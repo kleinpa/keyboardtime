@@ -3,3 +3,5 @@ dist
 *.wixobj
 *.wixpdb
 *.msi
+setup.log
+setup.log.full

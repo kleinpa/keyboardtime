@@ -1,22 +1,29 @@
 
-
 SRC_FILES = db.py foreground.py logger.py schema.py setup.py software_info.py
 SI_CANDLE_ARGS = $(shell python software_info.py --candle)
 SI_NAME = $(shell python software_info.py --value name)
+SI_EXE = $(shell python software_info.py --value name)
+SI_VERSION = $(shell python software_info.py --value version)
 
-all: install
+MSI_NAME = $(SI_NAME)\ $(SI_VERSION)
 
-install: $(SI_NAME).msi
+default: dist/$(SI_EXE).exe
 
-dist/metrics.exe: *.py
+install: $(MSI_NAME).msi
+
+dist/$(SI_EXE).exe: *.py
 	python setup.py py2exe
 
 install.wixobj: dist/metrics.exe
 	candle install.wxs $(SI_CANDLE_ARGS)
 
-$(SI_NAME).msi: install.wixobj
-	light install.wixobj -out $(SI_NAME).msi
+$(MSI_NAME).msi: install.wixobj
+	light "$<" -out "$@"
 
 .PHONY : clean
 clean :
-	-del dist *.wixobj *.wixpdb install.msi
+	-rmdir /S /Q dist
+	-rmdir /S /Q __pycache__
+	-del /F /Q *.wixobj
+	-del /F /Q *.wixpdb
+	-del /F /Q *.msi

@@ -4,6 +4,7 @@ import datetime
 import socket # for hostname
 import sys
 
+import server
 import foreground
 import db
 
@@ -24,8 +25,9 @@ def run():
             current_foreground.activeness = act_count/act_sum if act_sum>1 else 0
 
             if current_foreground.duration >= 1 and current_foreground.application != "":
-                db.session.add(current_foreground)
-                db.session.commit()
+                with db.session_scope() as s:
+                    s.add(current_foreground)
+                    s.commit()
 
             current_foreground = None
 
@@ -43,7 +45,15 @@ def run():
 
     while(True):
         log_action([foreground.window_name(), foreground.get_idle_duration()])
-        time.sleep(1)
+        time.sleep(.1)
+
+
+
 
 if __name__ == '__main__':
+    try:
+        server.run()
+    except:
+        print("Can not start http server.")
+
     run()
