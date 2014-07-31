@@ -15,14 +15,16 @@ install: $(MSI_NAME).msi
 dist/$(SI_EXE).exe: *.py
 	python setup.py py2exe
 
-files.wxs: $(shell ./web-files)
-	heat dir dist -ag -cg Web -dr INSTALLDIR -indent 2 -sfrag -var var.WebSrc -out "$@"
+dist: dist/$(SI_EXE).exe
 
-install.wixobj: install.wxs dist/metrics.exe
-	candle -nologo $(WIXEXTENSIONS) "$<" $(SI_CANDLE_ARGS)
+dist.wxs: dist
+	heat dir dist -ag -cg Files -dr INSTALLDIR -indent 2 -sfrag -srd -var var.DistSrc -out "$@"
 
-$(MSI_NAME).msi: install.wixobj
-	light -nologo $(WIXEXTENSIONS) "$<" -out "$@"
+%.wixobj: %.wxs
+	candle -nologo $(WIXEXTENSIONS) "$<" $(SI_CANDLE_ARGS) -dDistSrc=dist
+
+$(MSI_NAME).msi: install.wixobj dist.wixobj
+	light -nologo $(WIXEXTENSIONS) install.wixobj dist.wixobj -out "$@"
 
 .PHONY : clean
 clean :
@@ -31,3 +33,4 @@ clean :
 	-del /F /Q *.wixobj
 	-del /F /Q *.wixpdb
 	-del /F /Q *.msi
+	-del /F /Q dist.wxs

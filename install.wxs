@@ -13,7 +13,7 @@
             <Directory Id='ProgramFilesFolder'>
                 <Directory Id='CompanyDir' Name='$(var.si_company_name)'>
                     <Directory Id='ApplicationDir' Name='$(var.si_name)'>
-                        <Directory Id='INSTALLDIR' Name='$(var.si_version)'>
+                        <Directory Id='INSTALLDIR' Name='$(var.si_name) $(var.si_version)'>
                         </Directory>
                     </Directory>
                 </Directory>
@@ -21,24 +21,20 @@
         </Directory>
 
         <DirectoryRef Id='INSTALLDIR'>
-            <Component Id='Progarm' Guid='1973F8E1-151F-4964-BE78-3BBA7F1411AF'>
-                <File Id='$(var.si_exe).exe' Source='dist/$(var.si_exe).exe' KeyPath='yes' />
-                <File Id='sqlite3.dll' Source='dist/sqlite3.dll' />
-            </Component>
             <Component Id='AutoStart' Guid='9027B6C8-9B3B-4DD3-8610-8A72E6B52966'>
                 <RegistryValue Root="HKCU" Key="Software\Microsoft\Windows\CurrentVersion\Run"
-                    Type="string" Name="$(var.si_name)" Value="[#$(var.si_exe).exe]" />
+                    Type="string" Name="$(var.si_name)" Value="[#fil2F6F3B293B6DC91B5F66DDC24D5FEE5F]" />
             </Component>
         </DirectoryRef>
 
         <Feature Id="Main" Level="1">
-            <ComponentRef Id="Progarm" />
+            <ComponentGroupRef Id="Files"/>
             <ComponentRef Id="AutoStart" />
         </Feature>
 
-        <CustomAction Id="StartProgram" FileKey="$(var.si_exe).exe" ExeCommand="" Return="asyncNoWait" />
+        <CustomAction Id="StartProgram" FileKey="fil2F6F3B293B6DC91B5F66DDC24D5FEE5F" ExeCommand="" Return="asyncNoWait" />
 
-        <Property Id="QtExecCmdLine" Value='"[WindowsFolder]\System32\taskkill.exe" /F /IM metrics.exe'/>
+        <Property Id="QtExecCmdLine" Value='"[WindowsFolder]\System32\taskkill.exe" /F /IM $(var.si_exe).exe'/>
         <CustomAction Id="StopProgram" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="immediate" Return="ignore"/>
 
         <InstallExecuteSequence>

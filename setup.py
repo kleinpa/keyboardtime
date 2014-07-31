@@ -29,7 +29,7 @@ setup(
     options = { 'py2exe': {
         'compressed': True,
         'optimize': 2,
-        'bundle_files': 1,
+        'bundle_files': 2,
         'dist_dir': 'dist',
         'dll_excludes': [],
         'includes': [
@@ -48,8 +48,7 @@ setup(
             'distutils',
             'pydoc_data'
         ]}},
-    #windows=[logger],
-    console=[logger],
+    windows=[logger],
     data_files = list_data_files('web'),
     #zipfile=None,
     author=info['author'],
