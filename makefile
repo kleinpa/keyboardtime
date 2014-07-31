@@ -1,11 +1,12 @@
 
-SRC_FILES = db.py foreground.py logger.py schema.py setup.py software_info.py
-SI_CANDLE_ARGS = $(shell python software_info.py --candle)
-SI_NAME = $(shell python software_info.py --value name)
-SI_EXE = $(shell python software_info.py --value name)
-SI_VERSION = $(shell python software_info.py --value version)
+SRC_FILES := db.py foreground.py logger.py schema.py setup.py software_info.py
+SI_CANDLE_ARGS := $(shell python software_info.py --candle)
+SI_NAME := $(shell python software_info.py --value name)
+SI_EXE := $(shell python software_info.py --value name)
+SI_VERSION := $(shell python software_info.py --value version)
 
-MSI_NAME = $(SI_NAME)\ $(SI_VERSION)
+MSI_NAME := $(SI_NAME)\ $(SI_VERSION)
+WIXEXTENSIONS := -ext WixUIExtension -ext WixUtilExtension
 
 default: dist/$(SI_EXE).exe
 
@@ -14,11 +15,11 @@ install: $(MSI_NAME).msi
 dist/$(SI_EXE).exe: *.py
 	python setup.py py2exe
 
-install.wixobj: dist/metrics.exe
-	candle install.wxs $(SI_CANDLE_ARGS)
+install.wixobj: install.wxs dist/metrics.exe
+	candle -nologo $(WIXEXTENSIONS) "$<" $(SI_CANDLE_ARGS)
 
 $(MSI_NAME).msi: install.wixobj
-	light "$<" -out "$@"
+	light -nologo $(WIXEXTENSIONS) "$<" -out "$@"
 
 .PHONY : clean
 clean :

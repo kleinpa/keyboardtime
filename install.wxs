@@ -21,26 +21,30 @@
         </Directory>
 
         <DirectoryRef Id='INSTALLDIR'>
-            <Component Id='cmp_$(var.si_exe).exe' Guid='1973F8E1-151F-4964-BE78-3BBA7F1411AF'>
+            <Component Id='Progarm' Guid='1973F8E1-151F-4964-BE78-3BBA7F1411AF'>
                 <File Id='$(var.si_exe).exe' Source='dist/$(var.si_exe).exe' KeyPath='yes' />
+                <File Id='sqlite3.dll' Source='dist/sqlite3.dll' />
             </Component>
-            <Component Id='cmp_sqlite3.dll' Guid='1908B204-BED1-4601-BBA0-2D09C6B8070B'>
-                <File Id='sqlite3.dll' Source='dist/sqlite3.dll' KeyPath='yes' />
-            </Component>
-            <Component Id="RegistryEntries" Guid="74673E6A-5264-4277-A457-CE7C08341D07">
-                <RegistryKey Root="HKCU" Key="Software\Microsoft\Windows\CurrentVersion\Run">
-                    <RegistryValue Type="string" Name="$(var.si_name)" Value="[#$(var.si_exe).exe]" KeyPath="yes"/>
-                </RegistryKey>
+            <Component Id='AutoStart' Guid='9027B6C8-9B3B-4DD3-8610-8A72E6B52966'>
+                <RegistryValue Root="HKCU" Key="Software\Microsoft\Windows\CurrentVersion\Run"
+                    Type="string" Name="$(var.si_name)" Value="[#$(var.si_exe).exe]" />
             </Component>
         </DirectoryRef>
 
         <Feature Id="Main" Level="1">
-            <ComponentRef Id="cmp_$(var.si_exe).exe" />
-            <ComponentRef Id="cmp_sqlite3.dll" />
+            <ComponentRef Id="Progarm" />
+            <ComponentRef Id="AutoStart" />
         </Feature>
-        <Feature Id="Autostart" Level="1">
-            <ComponentRef Id="RegistryEntries" />
-        </Feature>
+
+        <CustomAction Id="StartProgram" FileKey="$(var.si_exe).exe" ExeCommand="" Return="asyncNoWait" />
+
+        <Property Id="QtExecCmdLine" Value='"[WindowsFolder]\System32\taskkill.exe" /F /IM metrics.exe'/>
+        <CustomAction Id="StopProgram" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="immediate" Return="ignore"/>
+
+        <InstallExecuteSequence>
+            <Custom Action="StartProgram" After="InstallFinalize">NOT Installed</Custom>
+            <Custom Action='StopProgram' Before='InstallValidate'/>
+        </InstallExecuteSequence>
 
     </Product>
 </Wix>
