@@ -51,9 +51,5 @@ def run():
 
 
 if __name__ == '__main__':
-    try:
-        server.run()
-    except:
-        print("Can not start http server.")
-
+    server.run()
     run()

@@ -15,6 +15,9 @@ install: $(MSI_NAME).msi
 dist/$(SI_EXE).exe: *.py
 	python setup.py py2exe
 
+files.wxs: $(shell ./web-files)
+	heat dir dist -ag -cg Web -dr INSTALLDIR -indent 2 -sfrag -var var.WebSrc -out "$@"
+
 install.wixobj: install.wxs dist/metrics.exe
 	candle -nologo $(WIXEXTENSIONS) "$<" $(SI_CANDLE_ARGS)
 

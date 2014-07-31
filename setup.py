@@ -1,6 +1,7 @@
 from distutils.core import setup
 import datetime
 import py2exe
+import os
 
 from software_info import info
 
@@ -20,6 +21,10 @@ logger = Target(
     icon_resources = [(1, "resources/app.ico")]
     )
 
+def list_data_files(root):
+    return [(folder, [os.path.join(folder, f) for f in files]) for
+                (folder, subfolders, files) in os.walk(root)]
+
 setup(
     options = { 'py2exe': {
         'compressed': True,
@@ -30,7 +35,7 @@ setup(
         'includes': [
             'cherrypy.wsgiserver.wsgiserver3',
         ],
-        'excludes': [
+        'excludes': [ # Mostly trial and error here
             'sqlalchemy.dialects.drizzle',
             'sqlalchemy.dialects.firebird',
             'sqlalchemy.dialects.mssql',
@@ -43,8 +48,10 @@ setup(
             'distutils',
             'pydoc_data'
         ]}},
-    windows=[logger],
-    zipfile=None,
+    #windows=[logger],
+    console=[logger],
+    data_files = list_data_files('web'),
+    #zipfile=None,
     author=info['author'],
-    version=info['version']
+    version=info['version'],
     )

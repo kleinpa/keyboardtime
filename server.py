@@ -1,3 +1,4 @@
+import sys
 import os
 import cherrypy
 import db
@@ -6,11 +7,18 @@ import json
 import decimal
 import datetime
 
+def get_app_root():
+  p = os.path.abspath(os.path.dirname(__file__))
+  if hasattr(sys,"frozen") and sys.frozen in ("windows_exe", "console_exe"):
+    p=os.path.abspath(os.path.dirname(os.path.abspath(sys.executable)))
+  return p
+
 class Root(object):
-  _cp_config = {'tools.staticdir.root': os.path.dirname(os.path.abspath(__file__)),
-  'tools.staticdir.on' : True,
-  'tools.staticdir.dir' : 'web',
-  'tools.staticdir.index' : 'index.html',
+  _cp_config = {
+    'tools.staticdir.on' : True,
+    'tools.staticdir.root' : os.path.join(get_app_root(), 'web'),
+    'tools.staticdir.dir' : '',
+    'tools.staticdir.index' : 'index.html',
   }
 
   @cherrypy.expose
@@ -38,13 +46,15 @@ class Root(object):
       return json.dumps(xs, cls=ForegroundEncoder)
 
 def run():
+  if hasattr(cherrypy.engine, "console_control_handler"):
+    cherrypy.engine.console_control_handler.subscribe()
+
   cherrypy.tree.mount(Root(), '/',
   {'/': {'tools.gzip.on': True}})
   cherrypy.server.socket_port = 63874
   cherrypy.engine.start()
 
-
 if __name__ == '__main__':
-  cherrypy.engine.console_control_handler.subscribe()
+
   run()
   cherrypy.engine.block()
