@@ -31,12 +31,20 @@ setup(
             'cherrypy.wsgiserver.wsgiserver3',
         ],
         'excludes': [
-            #'win32ui'
+            'sqlalchemy.dialects.drizzle',
+            'sqlalchemy.dialects.firebird',
+            'sqlalchemy.dialects.mssql',
+            'sqlalchemy.dialects.mysql',
+            'sqlalchemy.dialects.oracle',
+            'sqlalchemy.dialects.postgresql',
+            'sqlalchemy.dialects.sybase',
+            'win32com',
+            'unittest',
+            'distutils',
+            'pydoc_data'
         ]}},
     windows=[logger],
-    #console=[logger],
     zipfile=None,
     author=info['author'],
     version=info['version']
     )
-
