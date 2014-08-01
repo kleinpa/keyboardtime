@@ -10,7 +10,37 @@ info['author'] = "Peter Klein"
 info['company_name'] = "Peter Klein"
 info['copyright'] = "(c) {0}, {1}".format(datetime.datetime.now().year, info['company_name'])
 
-info['version'] = "1.0"
+def git_describe():
+    """Returns a dict representing the current version:
+        - a: Major version; from git tag
+        - b: Minor version; from git tag
+        - add: commits since minor version
+        - hash: current commit hash if clean, otherwise 1
+        - dirty: 1 if the working tree has changes, otherwise 0"""
+
+    import sys
+    import subprocess
+    import os
+    import re
+
+    os.environ["PATH"] += os.pathsep + "C:\\cygwin\\bin"
+    os.environ["PATH"] += os.pathsep + "C:\\cygwin64\\bin"
+
+    try:
+        st = subprocess.check_output("git.exe describe --tags --dirty --match v*").decode('utf8')
+        m = re.match(r"v(?P<a>\d+)\.(?P<b>\d+)(?:-(?P<add>\d+)-g(?P<hash>[0-9a-f]{7}))?(?P<dirty>-dirty)?", st)
+        d = m.groupdict()
+        d['dirty'] = 9999999 if d['dirty'] else 0
+        d['add'] = d['add'] or 0
+        d['hash'] = (d['hash'] or 0) if not d['dirty'] else d['dirty']
+        return d
+    except Exception as e:
+        raise e
+
+v = git_describe()
+
+info['version'] = "{a}.{b}.{add}.{hash}".format(**v)
+info['version4'] = "{a}.{b}.{add}.{dirty}".format(**v)
 
 # Some utility functions for accessing data from outside python
 if __name__ == '__main__':

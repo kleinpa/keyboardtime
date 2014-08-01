@@ -1,14 +1,21 @@
 <?xml version='1.0' encoding='utf-8'?>
 <Wix xmlns='http://schemas.microsoft.com/wix/2006/wi'>
-    <Product Name='$(var.si_name) $(var.si_version)' Id='451A2652-ABF7-49C7-BA98-B0B677442A05' UpgradeCode='92891133-407C-43FE-874C-D28945F58DEE'
-        Language='1033' Codepage='1252' Version='$(var.si_version)' Manufacturer='$(var.si_company_name)'>
+    <Product Name='$(var.si_name) $(var.si_version)' Id='*' UpgradeCode='92891133-407C-43FE-874C-D28945F58DEE'
+        Language='1033' Codepage='1252' Version='$(var.si_version4)' Manufacturer='$(var.si_company_name)'>
 
         <Package Id='*' Keywords='Installer' Description="$(var.si_description)"
-            Comments='$(var.si_copyright)' Manufacturer='Acme Ltd.'
+            Comments='$(var.si_copyright)' Manufacturer='$(var.si_company_name)'
             InstallerVersion='100' Languages='1033' Compressed='yes' SummaryCodepage='1252' />
 
-        <Media Id='1' Cabinet='Sample.cab' EmbedCab='yes' />
+        <Property Id="PREVIOUSVERSIONSINSTALLED" Secure="yes" />
+        <Upgrade Id="92891133-407C-43FE-874C-D28945F58DEE">
+           <UpgradeVersion
+              Minimum="0.0.0.0" Maximum="$(var.si_version4)"
+              Property="PREVIOUSVERSIONSINSTALLED"
+              IncludeMinimum="yes" IncludeMaximum="yes" />
+        </Upgrade>
 
+        <Media Id='1' Cabinet='Sample.cab' EmbedCab='yes' />
         <Directory Id='TARGETDIR' Name='SourceDir'>
             <Directory Id='ProgramFilesFolder'>
                 <Directory Id='CompanyDir' Name='$(var.si_company_name)'>
@@ -38,6 +45,7 @@
         <CustomAction Id="StopProgram" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="immediate" Return="ignore"/>
 
         <InstallExecuteSequence>
+            <RemoveExistingProducts After="InstallInitialize" />
             <Custom Action="StartProgram" After="InstallFinalize">NOT Installed</Custom>
             <Custom Action='StopProgram' Before='InstallValidate'/>
         </InstallExecuteSequence>

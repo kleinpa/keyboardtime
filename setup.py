@@ -9,7 +9,7 @@ class Target:
     def __init__(self, **kw):
         self.__dict__.update(kw)
         # for the versioninfo resources
-        self.version = info['version']
+        self.version = info['version4']
         self.company_name = info['company_name']
         self.copyright = info['copyright']
         self.name = info['description']
