@@ -5,7 +5,7 @@ import appdirs
 from software_info import info
 from schema import *
 
-data_dir = appdirs.user_data_dir(info['name'], info['author'])
+data_dir = appdirs.user_data_dir(info['name'], info['company_name'])
 if not os.path.exists(data_dir):os.makedirs(data_dir)
 
 db_file = os.path.join(data_dir,"{0}.db3".format(info['exe']))

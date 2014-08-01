@@ -34,6 +34,7 @@ setup(
         'dll_excludes': [],
         'includes': [
             'cherrypy.wsgiserver.wsgiserver3',
+            'pickle'
         ],
         'excludes': [ # Mostly trial and error here
             'sqlalchemy.dialects.drizzle',

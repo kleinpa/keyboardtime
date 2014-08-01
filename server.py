@@ -6,6 +6,7 @@ import json
 
 import decimal
 import datetime
+import software_info
 
 def get_app_root():
   p = os.path.abspath(os.path.dirname(__file__))
@@ -44,6 +45,10 @@ class Root(object):
     with db.session_scope() as s:
       xs = s.query(db.ForegroundApplication).all()
       return json.dumps(xs, cls=ForegroundEncoder)
+
+  @cherrypy.expose
+  def v(self):
+    return json.dumps({'info':software_info.get_version_data()})
 
 def run():
   if hasattr(cherrypy.engine, "console_control_handler"):

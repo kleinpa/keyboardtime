@@ -8,14 +8,19 @@ SI_VERSION := $(shell python software_info.py --value version)
 MSI_NAME := $(SI_NAME)\ $(SI_VERSION)
 WIXEXTENSIONS := -ext WixUIExtension -ext WixUtilExtension
 
-default: dist/$(SI_EXE).exe
+default: dist/$(SI_EXE).exe dist/version.dat
 
 install: $(MSI_NAME).msi
 
 dist/$(SI_EXE).exe: *.py
 	python setup.py py2exe
 
-dist: dist/$(SI_EXE).exe
+dist/version.dat: .FORCE
+	python software_info.py -p -o "$@"
+
+.FORCE:
+
+dist: dist/$(SI_EXE).exe dist/version.dat
 
 dist.wxs: dist
 	heat dir dist -ag -cg Files -dr INSTALLDIR -indent 2 -sfrag -srd -var var.DistSrc -out "$@"

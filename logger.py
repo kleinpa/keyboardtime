@@ -7,6 +7,7 @@ import sys
 import server
 import foreground
 import db
+import software_info
 
 IDLE_SECONDS = 60
 
@@ -51,5 +52,6 @@ def run():
 
 
 if __name__ == '__main__':
+    print("Starting {description} version {version}".format(**software_info.info))
     server.run()
     run()
