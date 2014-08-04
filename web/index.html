@@ -7,12 +7,12 @@
   <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.min.js"></script>
   <script type="text/javascript" src="/index.js"></script>
   <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.2.0/css/bootstrap.css">
-
 </head>
 <body ng-app="metrics" ng-controller="CtrlMetrics">
   <h1>What have you been doing?</h1>
-  <div ng-repeat="x in data | orderBy: '-start'">
-    {{ x.start  | date : 'short' }}: {{x.application }}
+  <div ng-repeat="x in by_day">
+  <h2>{{ x.key  | date : 'longDate' }}</h2>
+    <day-bar data='x.values'></day-bar>
   </div>
 </body>
 </html>
