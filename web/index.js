@@ -22,12 +22,6 @@ controller('CtrlMetrics', function($scope, $http, $interval){
 }).
 directive( 'dayBar', [
   function () {
-    // Kelly's 22 colors of maximum contrast
-    var kelly = ['#FFB300', '#803E75', '#FF6800', '#A6BDD7',
-                 '#C10020', '#CEA262', '#817066', '#007D34',
-                 '#F6768E', '#00538A', '#FF7A5C', '#53377A',
-                 '#FF8E00', '#B32851', '#F4C800', '#7F180D',
-                 '#93AA00', '#593315', '#F13A13', '#232C16'];
 
     function decimalDay(d){
       return (
@@ -37,6 +31,11 @@ directive( 'dayBar', [
         d.getHours()/24)
 
     }
+    var kelly = ['kelly00', 'kelly01', 'kelly02', 'kelly03',
+                 'kelly04', 'kelly05', 'kelly06', 'kelly07',
+                 'kelly08', 'kelly09', 'kelly10', 'kelly11',
+                 'kelly12', 'kelly13', 'kelly14', 'kelly15',
+                 'kelly16', 'kelly17', 'kelly18', 'kelly19'];
 
     return {
       restrict: 'E',
@@ -72,7 +71,7 @@ directive( 'dayBar', [
           .attr("y", 0)
           .attr("width", function(d){return d.duration/86400})
           .attr("height", function(d){return 1+(d.activeness/20)})
-          .attr("fill", function(d){return kelly[applications.indexOf(d.application)]})
+          .attr("class", function(d){return kelly[applications.indexOf(d.application)]})
           .append("title").text(function(d){ return d.application })
 
         scope.render = function(data) {
