@@ -21,16 +21,18 @@ controller('CtrlMetrics', function($scope, $http, $interval){
     });
   }
   refreshData();
-}).
-directive( 'dayBar', [
-  function () {
-    var chart_color = 
-      ['kelly00', 'kelly01', 'kelly02', 'kelly03',
-       'kelly04', 'kelly05', 'kelly06', 'kelly07',
-       'kelly08', 'kelly09', 'kelly10', 'kelly11',
-       'kelly12', 'kelly13', 'kelly14', 'kelly15',
-       'kelly16', 'kelly17', 'kelly18', 'kelly19'];
-
+})
+.factory('ChartColors', function(){
+    return function(n){
+      color_classes = [
+        'kelly00', 'kelly01', 'kelly02', 'kelly03',
+        'kelly04', 'kelly05', 'kelly06', 'kelly07',
+        'kelly08', 'kelly09', 'kelly10', 'kelly11',
+        'kelly12', 'kelly13', 'kelly14', 'kelly15',
+        'kelly16', 'kelly17', 'kelly18', 'kelly19'];
+        return color_classes[n%color_classes.length];
+}})
+.directive('dayTimeline', ['ChartColors', function (ChartColors) {
     return {
       restrict: 'E',
       scope: {
@@ -43,9 +45,12 @@ directive( 'dayBar', [
         var width = 1200;//parseInt(d3.select('#chart').style('width'), 10);
         var width = width - margin.left - margin.right;
 
-        var applications =  d3.keys(d3.nest()
-          .key(function(d) { return d.application; })
-          .map(scope.data));
+        var applications = 
+          d3.nest()
+            .key(function(d) { return d.application; })
+            .map(scope.data);
+
+        var application_list = d3.keys(applications)
 
         var svg = d3.select(element[0])
           .append("svg")
@@ -58,10 +63,8 @@ directive( 'dayBar', [
         var xScale = d3.time.scale()
           .range([0,width])
           .domain([
-            new Date(d.getFullYear(), d.getMonth(), d.getDate()),
-            new Date(d.getFullYear(), d.getMonth(), d.getDate()+1)])
-
-
+            new Date(d.getFullYear(), d.getMonth(), d.getDate(), 8, 30),
+            new Date(d.getFullYear(), d.getMonth(), d.getDate(), 18, 30)])
 
         var xAxis = d3.svg.axis().scale(xScale)
           .ticks(d3.time.hours, 1)
@@ -84,7 +87,7 @@ directive( 'dayBar', [
             return xScale(new Date(new Date(d.start).setSeconds(new Date(d.start).getSeconds() + d.duration))) - xScale(new Date(d.start))
           })
           .attr("height", height)
-          .attr("class", function(d){return chart_color[application_list.indexOf(d.application)]})
+          .attr("class", function(d){return ChartColors(application_list.indexOf(d.application))})
           .append("title").text(function(d){ return d.application })
 
         svg.append("g")
@@ -92,6 +95,7 @@ directive( 'dayBar', [
           .call(xAxis.orient('top'))
 
         scope.render = function(data) {
+          // Something ought to happen here
 
 
 

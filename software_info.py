@@ -6,7 +6,7 @@ info = {}
 
 info['exe'] = "metrics"
 info['name'] = "Metrics"
-info['description'] = "Metrics Logger"
+info['description'] = "Foreground Logger"
 
 info['author'] = "Peter Klein"
 info['company_name'] = "Peter Klein"

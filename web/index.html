@@ -19,7 +19,7 @@
   <div ng-repeat="x in by_day" class="row">
     <div class="col-xs-12">
       <h2>{{ x.key  | date : 'longDate' }}</h2>
-      <day-bar data='x.values'></day-bar>
+      <day-timeline data='x.values'></day-timeline>
     </div>
   </div>
   <div class="row">
