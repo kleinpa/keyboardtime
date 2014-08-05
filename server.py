@@ -36,7 +36,7 @@ class Root(object):
                 'activeness': obj.activeness,
               }
           if isinstance(obj, datetime.datetime):
-            return obj.isoformat()
+            return obj.isoformat()+"Z"
 
               #<sqlalchemy.orm.query.Query object at 0x04821DD0
           # Let the base class default method raise the TypeError
@@ -47,8 +47,8 @@ class Root(object):
       return json.dumps(xs, cls=ForegroundEncoder)
 
   @cherrypy.expose
-  def v(self):
-    return json.dumps({'info':software_info.get_version_data()})
+  def info(self):
+    return json.dumps(software_info.info)
 
 def run():
   if hasattr(cherrypy.engine, "console_control_handler"):

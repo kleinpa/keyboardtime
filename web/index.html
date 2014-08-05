@@ -10,10 +10,26 @@
   <link rel="stylesheet" type="text/css" href="style.css">
 </head>
 <body ng-app="metrics" ng-controller="CtrlMetrics">
-  <h1>What have you been doing?</h1>
-  <div ng-repeat="x in by_day">
-  <h2>{{ x.key  | date : 'longDate' }}</h2>
-    <day-bar data='x.values'></day-bar>
+  <div class="container-fluid">
+  <div class="row">
+    <div class="col-xs-12">
+      <h1>{{ info.description }}</h1>
+    </div>
+  </div>
+  <div ng-repeat="x in by_day" class="row">
+    <div class="col-xs-12">
+      <h2>{{ x.key  | date : 'longDate' }}</h2>
+      <day-bar data='x.values'></day-bar>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-xs-12 footer">
+      <ul class="list-inline text-muted small">
+      <li> {{ info.name }} </li>
+      <li> {{ info.version }} </li>
+      <li> {{ info.copyright }} </li>
+      </ul>
+    </div>
   </div>
 </body>
 </html>

@@ -10,7 +10,7 @@ info['description'] = "Metrics Logger"
 
 info['author'] = "Peter Klein"
 info['company_name'] = "Peter Klein"
-info['copyright'] = "(c) {0}, {1}".format(datetime.datetime.now().year, info['company_name'])
+info['copyright'] = "(c) {0} {1}".format(datetime.datetime.now().year, info['company_name'])
 
 def get_version_data():
     def is_py2exe():

@@ -22,7 +22,7 @@ def run():
         idle = idle_time > IDLE_SECONDS
 
         if current_foreground and (idle or not current_foreground.application == application):
-            current_foreground.duration = (datetime.datetime.now() - current_foreground.start).total_seconds()
+            current_foreground.duration = (datetime.datetime.utcnow() - current_foreground.start).total_seconds()
             current_foreground.activeness = act_count/act_sum if act_sum>1 else 0
 
             if current_foreground.duration >= 1 and current_foreground.application != "":
@@ -36,7 +36,7 @@ def run():
             print(application)
             current_foreground = db.ForegroundApplication(
                 application = application,
-                start = datetime.datetime.now(),
+                start = datetime.datetime.utcnow(),
                 hostname = socket.gethostname())
             act_sum = idle_time
             act_count = 1

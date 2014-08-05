@@ -1,5 +1,7 @@
 angular.module('metrics', []).
 controller('CtrlMetrics', function($scope, $http, $interval){
+  $http.get('/info').success(function(x){ $scope.info = x })
+
   function refreshData(){
     $http.get('/data').success(function(x){
       $scope.data = x;
@@ -64,8 +66,6 @@ directive( 'dayBar', [
         var xAxis = d3.svg.axis().scale(xScale)
           .ticks(d3.time.hours, 1)
           .tickFormat(d3.time.format('%H'));
-
-
 
         svg.append("rect")
           .attr("x", 0)
