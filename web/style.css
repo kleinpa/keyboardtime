@@ -1,5 +1,11 @@
 /* Chart */
 
+.axis path, .axis line {
+  fill: none;
+  stroke: black;
+  shape-rendering: crispEdges;
+}
+
 /* Kelly's 22 colors of maximum contrast */
 .kelly00 {fill: #FFB300}
 .kelly01 {fill: #803E75}

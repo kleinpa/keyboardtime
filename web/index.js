@@ -23,14 +23,6 @@ controller('CtrlMetrics', function($scope, $http, $interval){
 directive( 'dayBar', [
   function () {
 
-    function decimalDay(d){
-      return (
-        d.getMilliseconds()/86400000 +
-        d.getSeconds()/86400 +
-        d.getMinutes()/1440 +
-        d.getHours()/24)
-
-    }
     var kelly = ['kelly00', 'kelly01', 'kelly02', 'kelly03',
                  'kelly04', 'kelly05', 'kelly06', 'kelly07',
                  'kelly08', 'kelly09', 'kelly10', 'kelly11',
@@ -44,22 +36,41 @@ directive( 'dayBar', [
       },
       link: function (scope, element) {
 
+        var margin = {top: 30, right: 30, bottom: 30, left: 30};
+        var height = 100;
+        var width = 1200;//parseInt(d3.select('#chart').style('width'), 10);
+        var width = width - margin.left - margin.right;
+
         var applications =  d3.keys(d3.nest()
           .key(function(d) { return d.application; })
           .map(scope.data));
 
         var svg = d3.select(element[0])
-        .append("svg")
-        .attr('width', '100%')
-        .attr('height', '160px')
-        //.attr('viewBox', '.3 0 .4 1')
-        .attr('viewBox', '0 0 1 2')
-        .attr('preserveAspectRatio', 'none')
+          .append("svg")
+          .attr("width", width + margin.left + margin.right)
+          .attr("height", height + margin.top + margin.bottom)
+          .append("g")
+          .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+        d = new Date(scope.data[0].start)
+        var xScale = d3.time.scale()
+          .range([0,width])
+          .domain([
+            new Date(d.getFullYear(), d.getMonth(), d.getDate()),
+            new Date(d.getFullYear(), d.getMonth(), d.getDate()+1)])
+
+
+
+        var xAxis = d3.svg.axis().scale(xScale)
+          .ticks(d3.time.hours, 1)
+          .tickFormat(d3.time.format('%H'));
+
+
 
         svg.append("rect")
           .attr("x", 0)
-          .attr("y", 0)
-          .attr("width", 1)
+          .attr("y", .5)
+          .attr("width", "500px")
           .attr("height", 1)
           .attr("fill", "#CCCCCC")
 
@@ -67,12 +78,18 @@ directive( 'dayBar', [
           .data(scope.data)
           .enter()
           .append("rect")
-          .attr("x", function(d){ return decimalDay(new Date(d.start)) })
+          .attr("x", function(d){ return xScale(new Date(d.start)) })
           .attr("y", 0)
-          .attr("width", function(d){return d.duration/86400})
-          .attr("height", function(d){return 1+(d.activeness/20)})
+          .attr("width", function(d){
+            return xScale(new Date(new Date(d.start).setSeconds(new Date(d.start).getSeconds() + d.duration))) - xScale(new Date(d.start))
+          })
+          .attr("height", height)
           .attr("class", function(d){return kelly[applications.indexOf(d.application)]})
           .append("title").text(function(d){ return d.application })
+
+        svg.append("g")
+          .attr("class", "axis x-axis")
+          .call(xAxis.orient('top'))
 
         scope.render = function(data) {
 
