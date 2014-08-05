@@ -6,24 +6,58 @@
   shape-rendering: crispEdges;
 }
 
+.dayPercentBar text {
+    font-size: smaller;
+    kerning: 10%;
+    fill: white;
+}
+day-percentbar, day-timeline {
+    display:block;
+    width: 100%;
+}
+
 /* Kelly's 22 colors of maximum contrast */
-.kelly00 {fill: #FFB300}
-.kelly01 {fill: #803E75}
-.kelly02 {fill: #FF6800}
-.kelly03 {fill: #A6BDD7}
-.kelly04 {fill: #C10020}
-.kelly05 {fill: #CEA262}
-.kelly06 {fill: #817066}
-.kelly07 {fill: #007D34}
-.kelly08 {fill: #F6768E}
-.kelly09 {fill: #00538A}
-.kelly10 {fill: #FF7A5C}
-.kelly11 {fill: #53377A}
-.kelly12 {fill: #FF8E00}
-.kelly13 {fill: #B32851}
-.kelly14 {fill: #F4C800}
-.kelly15 {fill: #7F180D}
-.kelly16 {fill: #93AA00}
-.kelly17 {fill: #593315}
-.kelly18 {fill: #F13A13}
-.kelly19 {fill: #232C16}
+.fill00 {fill: #FFB300}
+.fill01 {fill: #803E75}
+.fill02 {fill: #FF6800}
+.fill03 {fill: #A6BDD7}
+.fill04 {fill: #C10020}
+.fill05 {fill: #CEA262}
+.fill06 {fill: #817066}
+.fill07 {fill: #007D34}
+.fill08 {fill: #F6768E}
+.fill09 {fill: #00538A}
+.fill10 {fill: #FF7A5C}
+.fill11 {fill: #53377A}
+.fill12 {fill: #FF8E00}
+.fill13 {fill: #B32851}
+.fill14 {fill: #F4C800}
+.fill15 {fill: #7F180D}
+.fill16 {fill: #93AA00}
+.fill17 {fill: #593315}
+.fill18 {fill: #F13A13}
+.fill19 {fill: #232C16}
+/* It would be great if I could make these have stripes or something */
+.fill20 {fill: #FFB300; fill-opacity: 50%;}
+.fill21 {fill: #803E75; fill-opacity: 50%;}
+.fill22 {fill: #FF6800; fill-opacity: 50%;}
+.fill23 {fill: #A6BDD7; fill-opacity: 50%;}
+.fill24 {fill: #C10020; fill-opacity: 50%;}
+.fill25 {fill: #CEA262; fill-opacity: 50%;}
+.fill26 {fill: #817066; fill-opacity: 50%;}
+.fill27 {fill: #007D34; fill-opacity: 50%;}
+.fill28 {fill: #F6768E; fill-opacity: 50%;}
+.fill29 {fill: #00538A; fill-opacity: 50%;}
+.fill30 {fill: #FF7A5C; fill-opacity: 50%;}
+.fill31 {fill: #53377A; fill-opacity: 50%;}
+.fill32 {fill: #FF8E00; fill-opacity: 50%;}
+.fill33 {fill: #B32851; fill-opacity: 50%;}
+.fill34 {fill: #F4C800; fill-opacity: 50%;}
+.fill35 {fill: #7F180D; fill-opacity: 50%;}
+.fill36 {fill: #93AA00; fill-opacity: 50%;}
+.fill37 {fill: #593315; fill-opacity: 50%;}
+.fill38 {fill: #F13A13; fill-opacity: 50%;}
+.fill39 {fill: #232C16; fill-opacity: 50%;}
+
+/* Force vertical scrollbar */
+html { overflow-y: scroll; }
