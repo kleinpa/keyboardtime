@@ -1,6 +1,6 @@
 angular.module('metrics', []).
 controller('CtrlMetrics', function($scope, $http, $interval){
-  $http.get('/info').success(function(x){ $scope.info = x })
+  $http.get('/info').success(function(x){ $scope.info = x });
 
   function refreshData(){
     $http.get('/data').success(function(x){
@@ -24,12 +24,12 @@ controller('CtrlMetrics', function($scope, $http, $interval){
 }).
 directive( 'dayBar', [
   function () {
-
-    var kelly = ['kelly00', 'kelly01', 'kelly02', 'kelly03',
-                 'kelly04', 'kelly05', 'kelly06', 'kelly07',
-                 'kelly08', 'kelly09', 'kelly10', 'kelly11',
-                 'kelly12', 'kelly13', 'kelly14', 'kelly15',
-                 'kelly16', 'kelly17', 'kelly18', 'kelly19'];
+    var chart_color = 
+      ['kelly00', 'kelly01', 'kelly02', 'kelly03',
+       'kelly04', 'kelly05', 'kelly06', 'kelly07',
+       'kelly08', 'kelly09', 'kelly10', 'kelly11',
+       'kelly12', 'kelly13', 'kelly14', 'kelly15',
+       'kelly16', 'kelly17', 'kelly18', 'kelly19'];
 
     return {
       restrict: 'E',
@@ -84,7 +84,7 @@ directive( 'dayBar', [
             return xScale(new Date(new Date(d.start).setSeconds(new Date(d.start).getSeconds() + d.duration))) - xScale(new Date(d.start))
           })
           .attr("height", height)
-          .attr("class", function(d){return kelly[applications.indexOf(d.application)]})
+          .attr("class", function(d){return chart_color[application_list.indexOf(d.application)]})
           .append("title").text(function(d){ return d.application })
 
         svg.append("g")

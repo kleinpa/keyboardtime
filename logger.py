@@ -10,6 +10,7 @@ import db
 import software_info
 
 IDLE_SECONDS = 60
+IGNORE_THRESHOLD = 1
 
 def run():
     current_foreground = None
@@ -25,7 +26,7 @@ def run():
             current_foreground.duration = (datetime.datetime.utcnow() - current_foreground.start).total_seconds()
             current_foreground.activeness = act_count/act_sum if act_sum>1 else 0
 
-            if current_foreground.duration >= 1 and current_foreground.application != "":
+            if current_foreground.duration >= IGNORE_THRESHOLD and current_foreground.application != "":
                 with db.session_scope() as s:
                     s.add(current_foreground)
                     s.commit()
