@@ -1,5 +1,6 @@
 <?xml version='1.0' encoding='utf-8'?>
-<Wix xmlns='http://schemas.microsoft.com/wix/2006/wi'>
+<Wix xmlns='http://schemas.microsoft.com/wix/2006/wi'
+     xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
     <Product Name='$(var.si_name) $(var.si_version)' Id='*' UpgradeCode='92891133-407C-43FE-874C-D28945F58DEE'
         Language='1033' Codepage='1252' Version='$(var.si_version4)' Manufacturer='$(var.si_company_name)'>
 
@@ -25,6 +26,9 @@
                     </Directory>
                 </Directory>
             </Directory>
+            <Directory Id="ProgramMenuFolder">
+                <Directory Id="ApplicationProgramsFolder" Name="$(var.si_description)"/>
+            </Directory>
         </Directory>
 
         <DirectoryRef Id='INSTALLDIR'>
@@ -34,9 +38,36 @@
             </Component>
         </DirectoryRef>
 
+        <DirectoryRef Id="ApplicationProgramsFolder">
+            <Component Id="ApplicationShortcut" Guid="5FA3ACCF-0B8B-4CDE-A5F8-ED5068C344E2">
+                <IniFile Id="UrlShortcutURL" Action="addLine"
+                    Directory="ApplicationProgramsFolder" Name="$(var.si_description).url"
+                    Section="InternetShortcut" Key="URL" Value="http://localhost:$(var.si_port)/" />
+                <IniFile Id="UrlShortcutHotKey" Action="addLine"
+                    Directory="ApplicationProgramsFolder" Name="$(var.si_description).url"
+                    Section="InternetShortcut" Key="HotKey" Value="0" />
+                <IniFile Id="UrlShortcutIconFile" Action="addLine"
+                    Directory="ApplicationProgramsFolder" Name="$(var.si_description).url"
+                    Section="InternetShortcut" Key="IconFile" Value="[#fil2F6F3B293B6DC91B5F66DDC24D5FEE5F]" />
+                <IniFile Id="UrlShortcutIconIndex" Action="addLine"
+                    Directory="ApplicationProgramsFolder" Name="$(var.si_description).url"
+                    Section="InternetShortcut" Key="IconIndex" Value="0" />
+                <IniFile Id="UrlShortcutProp3" Action="addLine"
+                    Directory="ApplicationProgramsFolder" Name="$(var.si_description).url"
+                    Section="{000214A0-0000-0000-C000-000000000046}" Key="Prop3" Value="19,2" />
+                <IniFile Id="UrlShortcutIDList" Action="addLine"
+                    Directory="ApplicationProgramsFolder" Name="$(var.si_description).url"
+                    Section="InternetShortcut" Key="IDList" Value="[~]" />
+                <RemoveFolder Id="ApplicationProgramsFolder" On="uninstall"/>
+                <RegistryValue Root="HKCU" Key="Software\$(var.si_company_name)\$(var.si_name)"
+                    Name="installed" Type="integer" Value="1" KeyPath="yes"/>
+            </Component>
+        </DirectoryRef>
+
         <Feature Id="Main" Level="1">
             <ComponentGroupRef Id="Files"/>
             <ComponentRef Id="AutoStart" />
+            <ComponentRef Id="ApplicationShortcut" />
         </Feature>
 
         <CustomAction Id="StartProgram" FileKey="fil2F6F3B293B6DC91B5F66DDC24D5FEE5F" ExeCommand="" Return="asyncNoWait" />

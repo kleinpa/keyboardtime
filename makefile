@@ -37,5 +37,5 @@ clean :
 	-rmdir /S /Q __pycache__
 	-del /F /Q *.wixobj
 	-del /F /Q *.wixpdb
-	-del /F /Q *.msi
+#	-del /F /Q *.msi
 	-del /F /Q dist.wxs
