@@ -1,29 +1,31 @@
-angular.module('metrics', []).
-controller('CtrlMetrics', function($scope, $http, $interval){
-  $http.get('/info').success(function(x){ $scope.info = x });
+/*global angular, d3, window*/
+(function () {
+  'use strict';
 
-  function refreshData(){
-    $http.get('/data').success(function(x){
-      $scope.data = x;
+  angular.module('metrics', [])
+    .controller('CtrlMetrics', function ($scope, $http, $interval) {
+      $http.get('/info').success(function (x) { $scope.info = x; });
 
-
-      $scope.by_day =
-        d3.nest()
-          .key(function(x) {
-            var d = new Date(x.start);
-            return new Date(d.getFullYear(), d.getMonth(), d.getDate()).toISOString();
-          })
-          .sortKeys(d3.descending)
-          .entries(x);
+      function refreshData() {
+        $http.get('/data').success(function (x) {
+          $scope.data = x;
 
 
-      // $interval(refreshData, 100, 1)
-    });
-  }
-  refreshData();
-})
-.factory('ChartColors', function(){
-    color_classes = [
+          $scope.by_day = d3.nest()
+            .key(function (x) {
+              var d = new Date(x.start);
+              return new Date(d.getFullYear(), d.getMonth(), d.getDate()).toISOString();
+            })
+            .sortKeys(d3.descending)
+            .entries(x);
+
+          //$interval(refreshData, 100, 1);
+        });
+      }
+      refreshData();
+    })
+    .factory('chartColors', function () {
+      var color_classes = [
         'fill00', 'fill01', 'fill02', 'fill03',
         'fill04', 'fill05', 'fill06', 'fill07',
         'fill08', 'fill09', 'fill10', 'fill11',
@@ -34,188 +36,157 @@ controller('CtrlMetrics', function($scope, $http, $interval){
         'fill28', 'fill29', 'fill30', 'fill31',
         'fill32', 'fill33', 'fill34', 'fill35',
         'fill36', 'fill37', 'fill38', 'fill39'];
-    cache = d3.map()
-    counter = 0;
+      var cache = d3.map();
+      var counter = 0;
 
-    return function(name){
-      if (!cache.has(name)){
-        cache.set(name, color_classes[counter++]);
-      }
-      return cache.get(name)
-    }
-  })
-.directive('dayTimeline', ['ChartColors', function (ChartColors) {
-    return {
-      restrict: 'E',
-      scope: {
-        data: '='
-      },
-      link: function (scope, element) {
-
-        var margin = {top: 30, right: 5, bottom: 10, left: 5};
-        var height = 100;
-        var width = 1200;//parseInt(d3.select('#chart').style('width'), 10);
-        var width = width - margin.left - margin.right;
-
-        var applications = 
-          d3.nest()
-            .key(function(d) { return d.application; })
-            .map(scope.data);
-
-        var application_list = d3.keys(applications);
-
-        var svg = d3.select(element[0])
-          .append("svg")
-          .attr("width", width + margin.left + margin.right)
-          .attr("height", height + margin.top + margin.bottom);
-
-        var chart = svg.append("g")
-          .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-        var axis_group = svg.append("g")
-          .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-        d = new Date(scope.data[0].start)
-        var xScale = d3.time.scale()
-          .domain([
-            new Date(d.getFullYear(), d.getMonth(), d.getDate(), 8, 30),
-            new Date(d.getFullYear(), d.getMonth(), d.getDate(), 18, 30)])
-
-        var xAxis = d3.svg.axis()
-          .orient('top')
-          .scale(xScale)
-          .ticks(d3.time.hours, 1)
-          .tickFormat(d3.time.format('%H'));
-
-        function update_width(){
-          width = svg.node().parentNode.offsetWidth - margin.left - margin.right
-          svg.attr("width", width + margin.left + margin.right)
-          xScale = xScale.range([0,width])
-          
-          axis_group.selectAll(".axis").remove()
-          axis_group.append("g")
-            .attr("class", "axis x-axis")
-            .call(xAxis)
-
-          render_data(scope.data)
+      return function (name) {
+        if (!cache.has(name)) {
+          cache.set(name, color_classes[counter++]);
         }
+        return cache.get(name);
+      };
+    })
+    .directive('dayTimeline', ['chartColors', function (chartColors) {
+      return {
+        restrict: 'E',
+        scope: {
+          data: '=',
+        },
+        link: function (scope, element) {
 
-        function render_data(data) {
-          chart.selectAll(".bar").remove()
+          var margin = {top: 30, right: 5, bottom: 10, left: 5};
+          var height = 100;
+          var width;
 
-          bars = chart.selectAll(".bar").data(data).enter()
-            .append("g").attr("class", "bar")
-            .attr("transform", function(d, i) { return "translate(" + xScale(new Date(d.start)) + ",0)"; });
+          var svg = d3.select(element[0])
+            .append("svg")
+            .attr("height", height + margin.top + margin.bottom);
 
-          bars.append("rect")
-            .attr("width", function(d){
-              return xScale(new Date(new Date(d.start).setSeconds(new Date(d.start).getSeconds() + d.duration))) - xScale(new Date(d.start))
-            })
-            .attr("height", height)
-            .attr("class", function(d){return ChartColors(d.application)})
+          var chart = svg.append("g")
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+          var axis_group = svg.append("g")
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-            bars.append("title").text(function(d){ return d.application })
-        };
+          var d = new Date(scope.data[0].start);
+          var xScale = d3.time.scale()
+            .domain([
+              new Date(d.getFullYear(), d.getMonth(), d.getDate(), 8, 30),
+              new Date(d.getFullYear(), d.getMonth(), d.getDate(), 18, 30)]);
 
-        update_width();
-        window.addEventListener('resize', update_width); 
+          var xAxis = d3.svg.axis()
+            .orient('top')
+            .scale(xScale)
+            .ticks(d3.time.hours, 1)
+            .tickFormat(d3.time.format('%H'));
 
-        scope.$watch('data', function(){
-          //render_data(scope.data);
-        }, true);
-      }
-    }
-  }])
-.directive('dayPercentbar', ['ChartColors', function (ChartColors) {
-    return {
-      restrict: 'E',
-      scope: {
-        data: '='
-      },
-      link: function (scope, element) {
+          function render_data(data) {
+            chart.selectAll(".bar").remove();
 
-        var margin = {top: 0, right: 5, bottom: 0, left: 5};
-        var height = 20;
-        var width = 1200;//parseInt(d3.select('#chart').style('width'), 10);
-        var width = width - margin.left - margin.right;
+            var bars = chart.selectAll(".bar").data(data).enter()
+              .append("g").attr("class", "bar")
+              .attr("transform", function (d) { return "translate(" + xScale(new Date(d.start)) + ",0)"; });
 
-        var applications = 
-          d3.nest()
-            .key(function(d) { return d.application; })
-            .rollup(function(ds) { return {duration: d3.sum(ds, function(d){return d.duration})};})
-            .entries(scope.data);
+            bars.append("rect")
+              .attr("width", function (d) {
+                return xScale(new Date(0, 0, 0, 0, 0, d.duration)) - xScale(new Date(0, 0, 0, 0, 0, 0));
+              })
+              .attr("height", height)
+              .attr("class", function (d) {return chartColors(d.application); });
 
-        var application_list = d3.keys(applications);
+            bars.append("title").text(function (d) { return d.application; });
+          }
 
-        var total = d3.sum(applications, function(d){ return d.values.duration; });
+          function update_width() {
+            width = svg.node().parentNode.offsetWidth - margin.left - margin.right;
+            svg.attr("width", width + margin.left + margin.right);
+            xScale = xScale.range([0, width]);
 
+            axis_group.selectAll(".axis").remove();
+            axis_group.append("g")
+              .attr("class", "axis x-axis")
+              .call(xAxis);
 
-        applications = applications.sort(function(a,b) { return b.values.duration - a.values.duration});
+            render_data(scope.data);
+          }
 
-        sum = 0;
-        applications.forEach(function(d,i){
-          d.values.prev = sum;
-          sum += d.values.duration;
-        });
+          update_width();
+          window.addEventListener('resize', update_width);
 
-        var svg = d3.select(element[0])
-          .append("svg")
-          .attr("class", "dayPercentBar")
-          .attr("width", width + margin.left + margin.right)
-          .attr("height", height + margin.top + margin.bottom);
-
-        var chart = svg.append("g")
-          .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-        d = new Date(scope.data[0].start)
-        var xScale = d3.scale.linear()
-          .domain([0, total])
-
-        function update_width(){
-          width = svg.node().parentNode.offsetWidth - margin.left - margin.right
-          svg.attr("width", width + margin.left + margin.right)
-          xScale = xScale.range([0,width])
-
-          render_data(applications)
+          scope.$watch('data', function () {
+            render_data(scope.data);
+          }, true);
         }
+      };
+    }])
+    .directive('dayPercentbar', ['chartColors', function (chartColors) {
+      return {
+        restrict: 'E',
+        scope: {
+          data: '='
+        },
+        link: function (scope, element) {
+          var margin = {top: 0, right: 5, bottom: 0, left: 5};
+          var height = 20;
 
-        function render_data(data) {
-          bars = chart.selectAll("g").remove()
-          bars = chart.selectAll("g").data(data).enter()
-            .append("g")
-            .attr("transform", function(d, i) { return "translate(" + xScale(d.values.prev) + ",0)"; });
-            //.attr("width", function(d){ return xScale(d.values.duration); })
+          var svg = d3.select(element[0])
+            .append("svg")
+            .attr("class", "dayPercentBar")
+            .attr("height", height + margin.top + margin.bottom);
 
-          bars.append("rect")
-            //.attr("x", function(d){ return xScale(d.values.prev); })
-            //.attr("y", 0)
-            .attr("width", function(d){ return xScale(d.values.duration); })
-            .attr("height", height)
-            .attr("class", function(d){return ChartColors(d.key); });
-          
-          bars.append("title").text(function(d){ return d.key; });
-          bars.append("text")
-            .attr("x", 1.5)
-            .attr("y", height - 3)
-            .text(function(d){ return d.key; });
-        };
+          var chart = svg.append("g")
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
+          var xScale = d3.scale.linear();
 
-        update_width();
-        window.addEventListener('resize', update_width); 
+          function render_data(data) {
+            var applications = d3.nest()
+              .key(function (d) { return d.application; })
+              .rollup(function (ds) { return {duration: d3.sum(ds, function (d) {return d.duration; }) }; })
+              .entries(data);
 
-        scope.$watch('data', function(){
-          //render_data(applications);
-        }, true);
-      }
-    }
-  }])
-var debounce = function(fn, timeout) 
-{
-  var timeoutID = -1;
-  return function() {
-    if (timeoutID > -1) {
-      window.clearTimeout(timeoutID);
-    }
-    timeoutID = window.setTimeout(fn, timeout);
-  }
-};
+            var total = d3.sum(applications, function (d) { return d.values.duration; });
+            xScale.domain([0, total]);
+
+            applications = applications.sort(function (a, b) { return b.values.duration - a.values.duration; });
+
+            var sum = 0;
+            applications.forEach(function (d) {
+              d.values.prev = sum;
+              sum += d.values.duration;
+            });
+
+            var bars = chart.selectAll("g").remove();
+            bars = chart.selectAll("g").data(applications).enter()
+              .append("g")
+              .attr("transform", function (d) { return "translate(" + xScale(d.values.prev) + ",0)"; });
+
+            bars.append("rect")
+              .attr("width", function (d) { return xScale(d.values.duration); })
+              .attr("height", height)
+              .attr("class", function (d) {return chartColors(d.key); });
+
+            bars.append("title").text(function (d) { return d.key; });
+            bars.append("text")
+              .attr("x", 1.5)
+              .attr("y", height - 3)
+              .text(function (d) { return d.key; });
+          }
+
+          function update_width() {
+            var width = svg.node().parentNode.offsetWidth - margin.left - margin.right;
+            svg.attr("width", width + margin.left + margin.right);
+            xScale = xScale.range([0, width]);
+
+            render_data(scope.data);
+          }
+
+          update_width();
+          window.addEventListener('resize', update_width);
+
+          scope.$watch('data', function () {
+            //render_data(applications);
+          }, true);
+        }
+      };
+    }]);
+}());
