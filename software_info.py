@@ -10,7 +10,9 @@ info['description'] = "Foreground Logger"
 
 info['author'] = "Peter Klein"
 info['company_name'] = "Peter Klein"
-info['copyright'] = "(c) {0} {1}".format(datetime.datetime.now().year, info['company_name'])
+info['copyright'] = "{0} {1}".format(datetime.datetime.now().year, info['company_name'])
+
+info['port'] = 63874
 
 def get_version_data():
     def is_py2exe():
@@ -34,7 +36,7 @@ def get_version_data():
             st = subprocess.check_output("git.exe describe --tags --dirty --match \"v*\"").decode('utf8')
             m = re.match(r"v(?P<a>\d+)\.(?P<b>\d+)(?:-(?P<add>\d+)-g(?P<hash>[0-9a-f]{7}))?(?P<dirty>-dirty)?", st)
             d = m.groupdict()
-            d['dirty'] = 9999999 if d['dirty'] else 0
+            d['dirty'] = datetime.datetime.now().strftime("99%d%H%M") if d['dirty'] else 0
             d['add'] = d['add'] or 0
             d['hash'] = (d['hash'] or 0) if not d['dirty'] else d['dirty']
             return d

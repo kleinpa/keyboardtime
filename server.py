@@ -56,7 +56,7 @@ def run():
 
   cherrypy.tree.mount(Root(), '/',
   {'/': {'tools.gzip.on': True}})
-  cherrypy.server.socket_port = 63874
+  cherrypy.server.socket_port = software_info.info['port']
   cherrypy.engine.start()
 
 if __name__ == '__main__':
