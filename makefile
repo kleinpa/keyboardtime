@@ -1,5 +1,5 @@
 
-SRC_FILES := db.py foreground.py logger.py schema.py setup.py software_info.py
+SRC_FILES := db.py foreground.py main.py schema.py setup.py software_info.py
 SI_CANDLE_ARGS := $(shell python software_info.py --candle)
 SI_NAME := $(shell python software_info.py --value name)
 SI_EXE := $(shell python software_info.py --value name)

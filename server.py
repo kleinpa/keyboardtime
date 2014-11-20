@@ -50,16 +50,15 @@ class Root(object):
   def info(self):
     return json.dumps(software_info.info)
 
-def run():
+def run(port = None):
   if hasattr(cherrypy.engine, "console_control_handler"):
     cherrypy.engine.console_control_handler.subscribe()
 
   cherrypy.tree.mount(Root(), '/',
   {'/': {'tools.gzip.on': True}})
-  cherrypy.server.socket_port = software_info.info['port']
+  cherrypy.server.socket_port = port or software_info.info['port']
   cherrypy.engine.start()
 
 if __name__ == '__main__':
-
   run()
   cherrypy.engine.block()

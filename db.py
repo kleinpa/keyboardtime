@@ -10,8 +10,6 @@ if not os.path.exists(data_dir):os.makedirs(data_dir)
 
 db_file = os.path.join(data_dir,"{0}.db3".format(info['exe']))
 
-print("Using database: {0}".format(db_file))
-
 # SQLAlchemy Init
 from contextlib import contextmanager
 from sqlalchemy import create_engine
@@ -33,4 +31,3 @@ def session_scope():
         raise
     finally:
         s.close()
-
