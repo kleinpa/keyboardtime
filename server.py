@@ -23,7 +23,7 @@ class Root(object):
   }
 
   @cherrypy.expose
-  def data(self):
+  def data(self, start=None, end=None):
     class ForegroundEncoder(json.JSONEncoder):
       def default(self, obj):
           if isinstance(obj, decimal.Decimal):
@@ -43,8 +43,16 @@ class Root(object):
           return json.JSONEncoder.default(self, obj)
 
     with db.session_scope() as s:
-      xs = s.query(db.ForegroundApplication).all()
-      return json.dumps(xs, cls=ForegroundEncoder)
+      xs = s.query(db.ForegroundApplication)
+      if start:
+        start_dt = datetime.datetime.utcfromtimestamp(int(start))
+        xs = xs.filter(db.ForegroundApplication.start >= start_dt)
+
+      if end:
+        end_dt = datetime.datetime.utcfromtimestamp(int(end))
+        xs = xs.filter(db.ForegroundApplication.start <= end_dt)
+
+      return json.dumps(xs.all(), cls=ForegroundEncoder)
 
   @cherrypy.expose
   def info(self):
