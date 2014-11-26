@@ -4,12 +4,17 @@
 
   angular.module('metrics', [])
     .controller('CtrlMetrics', function ($scope, $http, $interval) {
-      $http.get('/info').success(function (x) { $scope.info = x; });
+      $scope.days = _.map(_.range(10), function(n) {
+        var day = moment().subtract(n, 'days').startOf('day')
+        return {
+          name: day.format('YYYY-MM-DD'),
+          date: day
+         }; });
+      $http.get('/info', {start: day.unix(), end: day.add(1, 'days').unix()}).success(function (x) { $scope.info = x; });
 
       function refreshData() {
         $http.get('/data').success(function (x) {
           $scope.data = x;
-
 
           $scope.by_day = d3.nest()
             .key(function (x) {

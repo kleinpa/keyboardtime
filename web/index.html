@@ -4,7 +4,8 @@
   <title>What have you been doing?</title>
   <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.20/angular.min.js"></script>
   <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.min.js"></script>
-  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.min.js"></script>
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.8.4/moment.min.js"></script>
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/lodash.js/2.4.1/lodash.js"></script>
   <script type="text/javascript" src="/index.js"></script>
   <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.2.0/css/bootstrap.css">
   <link rel="stylesheet" type="text/css" href="style.css">
@@ -14,13 +15,14 @@
   <div class="row">
     <div class="col-xs-12">
       <h1>{{ info.description }}</h1>
+
     </div>
   </div>
-  <div ng-repeat="x in by_day" class="row">
+  <div ng-repeat="d in days" class="row">
     <div class="col-xs-12">
-      <h2>{{ x.key  | date : 'longDate' }}</h2>
-      <day-percentbar data='x.values'></day-percentbar>
-      <day-timeline data='x.values'></day-timeline>
+      <h2>{{ d.name }}</h2>
+      <day-percentbar day='d.date'></day-percentbar>
+      <day-timeline day='d.date'></day-timeline>
     </div>
   </div>
   <div class="row">
