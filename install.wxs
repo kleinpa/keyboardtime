@@ -34,7 +34,7 @@
         <DirectoryRef Id='INSTALLDIR'>
             <Component Id='AutoStart' Guid='9027B6C8-9B3B-4DD3-8610-8A72E6B52966'>
                 <RegistryValue Root="HKCU" Key="Software\Microsoft\Windows\CurrentVersion\Run"
-                    Type="string" Name="$(var.si_name)" Value="[#fil2F6F3B293B6DC91B5F66DDC24D5FEE5F]" />
+                    Type="string" Name="$(var.si_name)" Value="[#fil8E862EEB5DA45675FE9A4852DB699AD2]" />
             </Component>
         </DirectoryRef>
 
@@ -48,7 +48,7 @@
                     Section="InternetShortcut" Key="HotKey" Value="0" />
                 <IniFile Id="UrlShortcutIconFile" Action="addLine"
                     Directory="ApplicationProgramsFolder" Name="$(var.si_description).url"
-                    Section="InternetShortcut" Key="IconFile" Value="[#fil2F6F3B293B6DC91B5F66DDC24D5FEE5F]" />
+                    Section="InternetShortcut" Key="IconFile" Value="[#fil8E862EEB5DA45675FE9A4852DB699AD2]" />
                 <IniFile Id="UrlShortcutIconIndex" Action="addLine"
                     Directory="ApplicationProgramsFolder" Name="$(var.si_description).url"
                     Section="InternetShortcut" Key="IconIndex" Value="0" />
@@ -70,7 +70,7 @@
             <ComponentRef Id="ApplicationShortcut" />
         </Feature>
 
-        <CustomAction Id="StartProgram" FileKey="fil2F6F3B293B6DC91B5F66DDC24D5FEE5F" ExeCommand="" Return="asyncNoWait" />
+        <CustomAction Id="StartProgram" FileKey="fil8E862EEB5DA45675FE9A4852DB699AD2" ExeCommand="" Return="asyncNoWait" />
 
         <Property Id="QtExecCmdLine" Value='"[WindowsFolder]\System32\taskkill.exe" /F /IM $(var.si_exe).exe'/>
         <CustomAction Id="StopProgram" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="immediate" Return="ignore"/>

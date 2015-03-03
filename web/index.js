@@ -2,8 +2,8 @@
 (function () {
   'use strict';
 
-  angular.module('metrics', [])
-    .controller('CtrlMetrics', function ($scope, $http, $interval) {
+  angular.module('main', [])
+    .controller('CtrlMain', function ($scope, $http, $interval) {
       $scope.days = _.map(_.range(10), function(n) {
         var day = moment().subtract(n, 'days').startOf('day')
         return {

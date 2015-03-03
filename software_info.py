@@ -4,9 +4,9 @@ import os
 
 info = {}
 
-info['exe'] = "metrics"
-info['name'] = "Metrics"
-info['description'] = "Foreground Logger"
+info['exe'] = "keyboardtime"
+info['name'] = "KeyboardTime"
+info['description'] = "Keyboard Time Monitor"
 
 info['author'] = "Peter Klein"
 info['company_name'] = "Peter Klein"

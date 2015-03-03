@@ -1,4 +1,4 @@
-== Metrics Logger ==
+== KeyboardTime ==
 A foreground application logger.
 
 See your data at http://localhost:63874/

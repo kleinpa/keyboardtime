@@ -8,17 +8,19 @@ SI_VERSION := $(shell python software_info.py --value version)
 MSI_NAME := $(SI_NAME)\ $(SI_VERSION)
 WIXEXTENSIONS := -ext WixUIExtension -ext WixUtilExtension
 
+PYTHON = python3
+
 default: dist/$(SI_EXE).exe dist/version.dat
 
 install: $(MSI_NAME).msi
 
 dist/$(SI_EXE).exe: *.py
-	python setup.py py2exe
+	$(PYTHON) setup.py py2exe
 
-dist/version.dat: .FORCE
-	python software_info.py -p -o "$@"
 
-.FORCE:
+.PHONY: dist/version.dat
+dist/version.dat: software_info.py
+	$(PYTHON) software_info.py -p -o "$@"
 
 dist: dist/$(SI_EXE).exe dist/version.dat
 
@@ -31,11 +33,9 @@ dist.wxs: dist
 $(MSI_NAME).msi: install.wixobj dist.wixobj
 	light -nologo $(WIXEXTENSIONS) install.wixobj dist.wixobj -out "$@"
 
-.PHONY : clean
 clean :
 	-rmdir /S /Q dist
 	-rmdir /S /Q __pycache__
 	-del /F /Q *.wixobj
 	-del /F /Q *.wixpdb
-#	-del /F /Q *.msi
 	-del /F /Q dist.wxs
