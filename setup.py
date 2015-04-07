@@ -3,7 +3,7 @@ import datetime
 import py2exe
 import os
 
-from software_info import info
+from keyboardtime.software_info import info
 
 class Target:
     def __init__(self, **kw):
@@ -16,7 +16,7 @@ class Target:
 
 main = Target(
     description = info['description'],
-    script = "main.py",
+    script = "keyboardtime\__main__.py",
     dest_base = info['exe'],
     icon_resources = [(1, "resources/app.ico")]
 )

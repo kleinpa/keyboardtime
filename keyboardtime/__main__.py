@@ -5,10 +5,10 @@ import socket # for hostname
 import sys
 import time
 
-import server
-import foreground
-import db
-import software_info
+from keyboardtime import server
+from keyboardtime import foreground
+from keyboardtime import db
+from keyboardtime import software_info
 
 IDLE_SECONDS = 60
 IGNORE_THRESHOLD = 1

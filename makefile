@@ -1,9 +1,9 @@
 
 SRC_FILES := db.py foreground.py main.py schema.py setup.py software_info.py
-SI_CANDLE_ARGS := $(shell python software_info.py --candle)
-SI_NAME := $(shell python software_info.py --value name)
-SI_EXE := $(shell python software_info.py --value name)
-SI_VERSION := $(shell python software_info.py --value version)
+SI_CANDLE_ARGS := $(shell python keyboardtime\software_info.py --candle)
+SI_NAME := $(shell python keyboardtime\software_info.py --value name)
+SI_EXE := $(shell python keyboardtime\software_info.py --value name)
+SI_VERSION := $(shell python keyboardtime\software_info.py --value version)
 
 MSI_NAME := $(SI_NAME)\ $(SI_VERSION)
 WIXEXTENSIONS := -ext WixUIExtension -ext WixUtilExtension
@@ -19,8 +19,8 @@ dist/$(SI_EXE).exe: *.py
 
 
 .PHONY: dist/version.dat
-dist/version.dat: software_info.py
-	$(PYTHON) software_info.py -p -o "$@"
+dist/version.dat: keyboardtime\\software_info.py
+	$(PYTHON) keyboardtime\\software_info.py -p -o "$@"
 
 dist: dist/$(SI_EXE).exe dist/version.dat
 
