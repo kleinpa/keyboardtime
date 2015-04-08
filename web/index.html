@@ -14,8 +14,8 @@
   <div class="container-fluid">
   <div class="row">
     <div class="col-xs-12">
-      <h1>{{ info.description }}</h1>
-
+      <h1 title="{{ info.name }} &#10; {{ info.version }} &#10; {{ info.copyright }}">
+        {{ info.description }}</h1>
     </div>
   </div>
   <div ng-repeat="d in days" class="row">
@@ -23,15 +23,6 @@
       <h2>{{ d.name }}</h2>
       <day-percentbar day='d.date'></day-percentbar>
       <day-timeline day='d.date'></day-timeline>
-    </div>
-  </div>
-  <div class="row">
-    <div class="col-xs-12 footer">
-      <ul class="list-inline text-muted small">
-      <li> {{ info.name }} </li>
-      <li> {{ info.version }} </li>
-      <li> {{ info.copyright }} </li>
-      </ul>
     </div>
   </div>
 </body>
