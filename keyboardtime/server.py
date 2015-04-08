@@ -6,6 +6,9 @@ import json
 import decimal
 import datetime
 
+import sqlalchemy
+from sqlalchemy import func
+
 from keyboardtime import software_info
 from keyboardtime import db
 
@@ -53,6 +56,36 @@ class Root(object):
         end_dt = datetime.datetime.utcfromtimestamp(int(end))
         xs = xs.filter(db.ForegroundApplication.start <= end_dt)
 
+      return json.dumps(xs.all(), cls=ForegroundEncoder)
+
+  @cherrypy.expose
+  def days(self):
+    import time
+    from datetime import datetime
+    ts = time.time()
+    utc_offset = (datetime.fromtimestamp(ts) -
+                  datetime.utcfromtimestamp(ts)).total_seconds()
+
+    class ForegroundEncoder(json.JSONEncoder):
+      def default(self, obj):
+          if isinstance(obj, decimal.Decimal):
+              return float(obj)
+          if isinstance(obj, datetime):
+            return obj.isoformat()+"Z"
+          return json.JSONEncoder.default(self, obj)
+
+    with db.session_scope() as s:
+      to_local = lambda x: func.datetime(x, "{0:+} seconds".format(utc_offset))
+      date = func.strftime('%Y-%m-%d', to_local(db.ForegroundApplication.start))
+
+      xs = s.query(
+        date,
+        to_local(func.min(db.ForegroundApplication.start)).label('start'),
+        to_local(func.max(db.ForegroundApplication.start)).label('end'),
+        func.sum(db.ForegroundApplication.duration).label('duration'),
+        )
+      xs = xs.select_from(db.ForegroundApplication)
+      xs = xs.group_by(date)
       return json.dumps(xs.all(), cls=ForegroundEncoder)
 
   @cherrypy.expose
