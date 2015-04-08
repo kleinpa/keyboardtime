@@ -185,5 +185,10 @@
       return function(input) {
         return moment.duration(input, "seconds").humanize()
       }
-    });
+    })
+    .filter('human_time', function() {
+      return function(input) {
+        return moment(input).format('LT')
+      }
+    });;
 }());

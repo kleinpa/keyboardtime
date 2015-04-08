@@ -22,6 +22,8 @@
     <div class="col-xs-12">
       <h2>{{ d.date }}</h2>
       {{ d.duration|human_duration }},
+      from {{ d.start|human_time }}
+      to {{ d.end|human_time }}
     </div>
   </div>
 </body>
