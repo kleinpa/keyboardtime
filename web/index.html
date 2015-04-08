@@ -1,7 +1,7 @@
 <!DOCTYPE html>
-<html>
+<html ng-app="main" ng-controller="CtrlMain">
 <head>
-  <title>What have you been doing?</title>
+  <title ng-bind="info.name"></title>
   <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.20/angular.min.js"></script>
   <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.min.js"></script>
   <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.8.4/moment.min.js"></script>
@@ -10,7 +10,7 @@
   <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.2.0/css/bootstrap.css">
   <link rel="stylesheet" type="text/css" href="style.css">
 </head>
-<body ng-app="main" ng-controller="CtrlMain">
+<body>
   <div class="container-fluid">
   <div class="row">
     <div class="col-xs-12">

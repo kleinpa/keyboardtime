@@ -10,7 +10,7 @@
           name: day.format('YYYY-MM-DD'),
           date: day
          }; });
-      $http.get('/info', {start: day.unix(), end: day.add(1, 'days').unix()}).success(function (x) { $scope.info = x; });
+      $http.get('/info').success(function (x) { $scope.info = x; });
 
       function refreshData() {
         $http.get('/data').success(function (x) {
