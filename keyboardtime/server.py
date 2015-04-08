@@ -60,12 +60,6 @@ class Root(object):
 
   @cherrypy.expose
   def days(self):
-    import time
-    from datetime import datetime
-    ts = time.time()
-    utc_offset = (datetime.fromtimestamp(ts) -
-                  datetime.utcfromtimestamp(ts)).total_seconds()
-
     class ForegroundEncoder(json.JSONEncoder):
       def default(self, obj):
           if isinstance(obj, decimal.Decimal):
@@ -75,8 +69,8 @@ class Root(object):
           return json.JSONEncoder.default(self, obj)
 
     with db.session_scope() as s:
-      to_local = lambda x: func.datetime(x, "{0:+} seconds".format(utc_offset))
-      date = func.strftime('%Y-%m-%d', to_local(db.ForegroundApplication.start))
+      to_local = lambda x: func.strftime('%Y-%m-%dT%H:%M:%S', x, 'localtime')
+      date = func.strftime('%Y-%m-%d', db.ForegroundApplication.start, 'localtime')
 
       xs = s.query(
         date,
@@ -86,6 +80,7 @@ class Root(object):
         )
       xs = xs.select_from(db.ForegroundApplication)
       xs = xs.group_by(date)
+      xs = xs.order_by(date.desc())
       return json.dumps(xs.all(), cls=ForegroundEncoder)
 
   @cherrypy.expose

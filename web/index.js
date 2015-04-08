@@ -4,30 +4,17 @@
 
   angular.module('main', [])
     .controller('CtrlMain', function ($scope, $http, $interval) {
-      $scope.days = _.map(_.range(10), function(n) {
-        var day = moment().subtract(n, 'days').startOf('day')
-        return {
-          name: day.format('YYYY-MM-DD'),
-          date: day
-         }; });
       $http.get('/info').success(function (x) { $scope.info = x; });
+      $http.get('/days').success(function (xs) {
+        $scope.days = _.map(xs, function(x){
+          return {
+            date: x[0],
+            start: x[1],
+            end: x[2],
+            duration: x[3]
+          }
+        })});
 
-      function refreshData() {
-        $http.get('/data').success(function (x) {
-          $scope.data = x;
-
-          $scope.by_day = d3.nest()
-            .key(function (x) {
-              var d = new Date(x.start);
-              return new Date(d.getFullYear(), d.getMonth(), d.getDate()).toISOString();
-            })
-            .sortKeys(d3.descending)
-            .entries(x);
-
-          //$interval(refreshData, 100, 1);
-        });
-      }
-      refreshData();
     })
     .factory('chartColors', function () {
       var color_classes = [
@@ -193,5 +180,10 @@
           }, true);
         }
       };
-    }]);
+    }])
+    .filter('human_duration', function() {
+      return function(input) {
+        return moment.duration(input, "seconds").humanize()
+      }
+    });
 }());

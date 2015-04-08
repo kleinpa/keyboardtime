@@ -20,9 +20,8 @@
   </div>
   <div ng-repeat="d in days" class="row">
     <div class="col-xs-12">
-      <h2>{{ d.name }}</h2>
-      <day-percentbar day='d.date'></day-percentbar>
-      <day-timeline day='d.date'></day-timeline>
+      <h2>{{ d.date }}</h2>
+      {{ d.duration|human_duration }},
     </div>
   </div>
 </body>
