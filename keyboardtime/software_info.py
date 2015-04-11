@@ -47,7 +47,6 @@ def get_version_data():
             import pickle
             root = os.path.abspath(os.path.dirname(os.path.abspath(sys.executable)))
             with open(os.path.join(root, 'version.dat'), 'rb') as f:
-                x2=os.path.join(root, 'version.dat')
                 return pickle.load(f)
         except Exception:
             return None
@@ -80,7 +79,15 @@ if __name__ == '__main__':
         print(info.get(args.value, None))
     if args.pickle:
         import pickle
-        with open(args.o or "version.dat", 'wb') as f:
-            version_data = get_version_data()
-            pickle.dump(version_data, f)
-            print("Version data written to '{0}'".format(args.o or "version.dat"))
+        if os.path.exists(args.o or "version.dat"):
+            with open(args.o or "version.dat", 'rb') as f:
+                old_version_data = pickle.load(f)
+        else:
+            old_version_data = False
+        version_data = get_version_data()
+        if version_data != old_version_data:
+            if not os.path.exists(os.path.dirname(args.o or "version.dat")):
+                os.makedirs(os.path.dirname(args.o or "version.dat"))
+            with open(args.o or "version.dat", 'wb') as f:
+                pickle.dump(version_data, f)
+                print("Version data written to '{0}'".format(args.o or "version.dat"))

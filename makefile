@@ -10,24 +10,25 @@ WIXEXTENSIONS := -ext WixUIExtension -ext WixUtilExtension
 
 PYTHON = python3
 
-default: dist/$(SI_EXE).exe dist/version.dat
+default: version dist/$(SI_EXE).exe
 
-install: $(MSI_NAME).msi
+install: version $(MSI_NAME).msi
 
 dist/$(SI_EXE).exe: *.py
 	$(PYTHON) setup.py py2exe
 
+.PHONY: version
+version: keyboardtime\\software_info.py
+	@ $(PYTHON) keyboardtime\\software_info.py -p -o "dist/version.dat"
 
-.PHONY: dist/version.dat
-dist/version.dat: keyboardtime\\software_info.py
-	$(PYTHON) keyboardtime\\software_info.py -p -o "$@"
+dist/version.dat: |version
 
 dist: dist/$(SI_EXE).exe dist/version.dat
 
 dist.wxs: dist
 	heat dir dist -ag -cg Files -dr INSTALLDIR -indent 2 -sfrag -srd -var var.DistSrc -out "$@"
 
-%.wixobj: %.wxs
+%.wixobj: %.wxs dist/version.dat
 	candle -nologo $(WIXEXTENSIONS) "$<" $(SI_CANDLE_ARGS) -dDistSrc=dist
 
 $(MSI_NAME).msi: install.wixobj dist.wixobj

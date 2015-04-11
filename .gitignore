@@ -5,5 +5,5 @@ dist
 *.msi
 setup.log
 setup.log.full
-dist.wxs
+*.wxs
 .idea
