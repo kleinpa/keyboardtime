@@ -92,7 +92,9 @@ def run(port = None):
     cherrypy.engine.console_control_handler.subscribe()
 
   cherrypy.tree.mount(Root(), '/',
-  {'/': {'tools.gzip.on': True}})
+  {'/': {'tools.gzip.on': True,
+         'tools.staticdir.content_types':
+           {'woff2': 'application/font-woff2'}}})
   cherrypy.server.socket_port = port or software_info.info['port']
   cherrypy.engine.start()
 
