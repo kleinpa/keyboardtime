@@ -9,8 +9,6 @@
 
 h1, h2, h3, h4, h5, h6 { font-family: 'Montserrat'; }
 
-/* Chart */
-
 .header {
   background-color: #F13A13;
   color: white;
@@ -26,8 +24,26 @@ h1, h2, h3, h4, h5, h6 { font-family: 'Montserrat'; }
   border: 4px solid white;
   margin: -4px 0 -4px -4px;
   box-sizing: content-box;
+}
 
-  }
+day-summary {
+  display: block;
+  width: 100%;
+  height: 100%;
+
+  position: absolute;
+  z-index: -1;
+  top:0;
+  left:0;
+  border-top: 4px solid white;
+}
+
+day-summary .bar {
+  fill: #FFB300;
+}
+
+
+/* Chart */
 
 .axis path, .axis line {
   fill: none;

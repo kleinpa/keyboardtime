@@ -181,6 +181,57 @@
         }
       };
     }])
+    .directive('daySummary', ['chartColors', function (chartColors) {
+      return {
+        restrict: 'E',
+        scope: {
+          data: '=',
+        },
+        link: function (scope, element) {
+          var margin = {top: 0, right: 0, bottom: 0, left: 0};
+
+          var svg = d3.select(element[0])
+            .append("svg")
+
+          var chart = svg.append("g")
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+          var day = scope.data.date;
+          var xScale = d3.time.scale()
+            .domain([moment(day), moment(day).add(1, 'day')]);
+
+          var bar = chart
+            .append("g").attr("class", "bar")
+            .append("rect")
+            .attr("class", 'bar')
+
+
+          function draw() {
+            var width = parseInt(d3.select(element[0]).style('width'));
+            var height = parseInt(d3.select(element[0]).style('height'));
+            width = width - margin.left - margin.right
+            height = height - margin.top - margin.bottom
+            svg.attr("height", height + margin.top + margin.bottom);
+            svg.attr("width", width + margin.left + margin.right);
+
+            xScale = xScale.range([0, width]);
+
+            bar.attr("transform", "translate(" + xScale(moment(scope.data.start)) + ",0)")
+               .attr("width", function (d) {
+                 return xScale(moment(scope.data.end)) - xScale(moment(scope.data.start));
+               })
+              .attr("height", height)
+          }
+
+          draw();
+          window.addEventListener('resize', draw);
+
+          scope.$watch('data', function () {
+            draw();
+          }, true);
+        }
+      };
+    }])
     .filter('human_duration', function() {
       return function(input) {
         return moment.duration(input, "seconds").humanize()
