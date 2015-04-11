@@ -12,10 +12,11 @@
 </head>
 <body>
   <div class="container-fluid">
-  <div class="row">
-    <div class="col-xs-12">
-      <h1 title="{{ info.name }} &#10; {{ info.version }} &#10; {{ info.copyright }}">
-        {{ info.description }}</h1>
+  <div class="row header">
+    <div class="col-xs-12 ">
+      <h1 title="{{ info.description }} &#10; {{ info.version }} &#10; {{ info.copyright }}">
+        <img src="favicon.ico">
+        {{ info.name }}</h1>
     </div>
   </div>
   <div ng-repeat="d in days" class="row">
