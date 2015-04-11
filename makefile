@@ -14,7 +14,7 @@ default: version dist/$(SI_EXE).exe
 
 install: version $(MSI_NAME).msi
 
-dist/$(SI_EXE).exe: *.py
+dist/$(SI_EXE).exe: *.py web
 	$(PYTHON) setup.py py2exe
 
 .PHONY: version
@@ -25,7 +25,7 @@ dist/version.dat: |version
 
 dist: dist/$(SI_EXE).exe dist/version.dat
 
-dist.wxs: dist
+dist.wxs: dist web
 	heat dir dist -ag -cg Files -dr INSTALLDIR -indent 2 -sfrag -srd -var var.DistSrc -out "$@"
 
 %.wixobj: %.wxs dist/version.dat
