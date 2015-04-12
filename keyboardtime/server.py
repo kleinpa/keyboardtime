@@ -87,6 +87,12 @@ class Root(object):
   def info(self):
     return json.dumps(software_info.info)
 
+  # Serve index.html for all pages to make angular routing easier
+  @cherrypy.expose
+  def default(self,*args,**kwargs):
+    return cherrypy.lib.static.serve_file(
+    os.path.join(get_app_root(), 'web', 'index.html'))
+
 def run(port = None):
   if hasattr(cherrypy.engine, "console_control_handler"):
     cherrypy.engine.console_control_handler.subscribe()

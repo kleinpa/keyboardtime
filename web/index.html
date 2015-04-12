@@ -2,7 +2,9 @@
 <html ng-app="main" ng-controller="CtrlMain">
 <head>
   <title ng-bind="info.name"></title>
+  <base href="/">
   <script type="text/javascript" src="/angular-1.3.15.min.js"></script>
+  <script type="text/javascript" src="/angular-route-1.3.15.min.js"></script>
   <script type="text/javascript" src="/d3-3.5.5.min.js"></script>
   <script type="text/javascript" src="/moment-2.10.2.min.js"></script>
   <script type="text/javascript" src="/lodash-3.6.0.min.js"></script>
@@ -14,19 +16,13 @@
   <div class="container-fluid">
   <div class="row header">
     <div class="col-xs-12 ">
-      <h1 title="{{ info.description }} &#10; {{ info.version }} &#10; {{ info.copyright }}">
-        <img src="favicon.ico">
-        {{ info.name }}</h1>
+      <a href="/">
+        <h1 title="{{ info.description }} &#10; {{ info.version }} &#10; {{ info.copyright }}">
+          <img src="favicon.ico"> {{ info.name }}
+        </h1>
+      </a>
     </div>
   </div>
-  <div ng-repeat="d in days" class="row">
-    <div class="col-xs-12">
-      <h2>{{ d.date }}</h2>
-      {{ d.duration|human_duration }},
-      from {{ d.start|human_time }}
-      to {{ d.end|human_time }}
-      <day-summary data=d>
-    </div>
-  </div>
+  <div ng-view></div>
 </body>
 </html>

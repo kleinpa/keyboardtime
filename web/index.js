@@ -2,8 +2,23 @@
 (function () {
   'use strict';
 
-  angular.module('main', [])
+  angular.module('main', ['ngRoute'])
     .controller('CtrlMain', function ($scope, $http, $interval) {
+      $http.get('/info').success(function (x) { $scope.info = x; });
+    })
+    .config(['$routeProvider', '$locationProvider',
+      function($routeProvider, $locationProvider) {
+        $locationProvider.html5Mode(true);
+        $routeProvider.
+          when('/', {
+            templateUrl: 'overview.html',
+            controller: 'CtrlOverview'
+          }).
+          otherwise({
+            redirectTo: '/'
+          });
+      }])
+    .controller('CtrlOverview', function ($scope, $http, $interval) {
       $http.get('/info').success(function (x) { $scope.info = x; });
       $http.get('/days').success(function (xs) {
         $scope.days = _.map(xs, function(x){

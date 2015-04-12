@@ -9,9 +9,14 @@
 
 h1, h2, h3, h4, h5, h6 { font-family: 'Montserrat'; }
 
-.header {
+.header, header {
   background-color: #F13A13;
   color: white;
+}
+
+.header a {
+  color: inherit;
+  text-decoration: none;
 }
 
 .header h1 {
