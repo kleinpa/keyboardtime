@@ -14,7 +14,7 @@ h1, h2, h3, h4, h5, h6 { font-family: 'Montserrat'; }
   color: white;
 }
 
-.header a {
+a, a:hover, a:visited, a:active, a:focus {
   color: inherit;
   text-decoration: none;
 }
@@ -45,6 +45,10 @@ day-summary {
 
 day-summary .bar {
   fill: #FFB300;
+}
+
+a:hover day-summary .bar {
+  fill: #CC8000;
 }
 
 
