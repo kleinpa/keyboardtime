@@ -2,3 +2,4 @@ appdirs
 sqlalchemy
 py2exe
 cherrypy
+python-dateutil

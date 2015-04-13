@@ -19,14 +19,49 @@
         $locationProvider.html5Mode(true);
         $routeProvider.
           when('/', {
-            templateUrl: 'partials/overview.html',
+            templateUrl: '/partials/overview.html',
             controller: 'CtrlOverview'
+          }).
+          when('/detail/:date', {
+            templateUrl: '/partials/detail.html',
+            controller: 'CtrlDetail'
+          }).
+          when('/detail/:start/:end', {
+            templateUrl: '/partials/detail.html',
+            controller: 'CtrlDetail'
           }).
           otherwise({
             redirectTo: '/'
           });
       }])
     .controller('CtrlOverview', function ($scope, $http) { })
+    .controller('CtrlDetail', function ($scope, $http, $interval, $routeParams) {
+      if($routeParams.date) {
+        $scope.title = $routeParams.date
+        $scope.start = moment($routeParams.date)
+        $scope.end = moment($scope.start).add(1,'day')
+      }
+      $http.get('/data_detail', {params: {
+        start: $scope.start.format(),
+        end: $scope.end.format()
+        }})
+        .success(function (x) {
+          $scope.activities = _.map(x.activities, function(x){
+            return {
+              name: x[0],
+              start: moment(x[1]),
+              duration: moment.duration(x[2], 'seconds')
+            }
+          });
+          $scope.top = _.map(x.top, function(x){
+            return {
+              name: x[0],
+              duration: moment.duration(x[1], 'seconds')
+            }
+          })
+        });
+      $scope.date = $routeParams.date
+    })
     .factory('chartColors', function () {
       var color_classes = [
         'fill00', 'fill01', 'fill02', 'fill03',
@@ -70,11 +105,7 @@
           var axis_group = svg.append("g")
             .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-          var d = new Date(scope.data[0].start);
-          var xScale = d3.time.scale()
-            .domain([
-              new Date(d.getFullYear(), d.getMonth(), d.getDate(), 8, 30),
-              new Date(d.getFullYear(), d.getMonth(), d.getDate(), 18, 30)]);
+          var xScale = d3.time.scale();
 
           var xAxis = d3.svg.axis()
             .orient('top')
@@ -83,20 +114,27 @@
             .tickFormat(d3.time.format('%H'));
 
           function render_data(data) {
+
+
             chart.selectAll(".bar").remove();
+            if(data) {
+              xScale = xScale.domain([
+                _.first(scope.data).start,
+                _.last(scope.data).start]);
 
-            var bars = chart.selectAll(".bar").data(data).enter()
-              .append("g").attr("class", "bar")
-              .attr("transform", function (d) { return "translate(" + xScale(new Date(d.start)) + ",0)"; });
+              var bars = chart.selectAll(".bar").data(data).enter()
+                .append("g").attr("class", "bar")
+                .attr("transform", function (d) { return "translate(" + xScale(d.start) + ",0)"; });
 
-            bars.append("rect")
-              .attr("width", function (d) {
-                return xScale(new Date(0, 0, 0, 0, 0, d.duration)) - xScale(new Date(0, 0, 0, 0, 0, 0));
-              })
-              .attr("height", height)
-              .attr("class", function (d) {return chartColors(d.application); });
+              bars.append("rect")
+                .attr("width", function (d) {
+                  return xScale(moment(d.start).add(d.duration, 'seconds')) - xScale(d.start);
+                })
+                .attr("height", height)
+                .attr("class", function (d) {return chartColors(d.name); });
 
-            bars.append("title").text(function (d) { return d.application; });
+              bars.append("title").text(function (d) { return d.name; });
+            }
           }
 
           function update_width() {

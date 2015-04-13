@@ -1,0 +1,17 @@
+<div class="row">
+  <div class="col-xs-12">
+    <h2>{{title}}
+      <day-timeline data='activities'>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-6">
+    <ul>
+      <li ng-repeat="a in top">
+        {{ a.name }} ({{ a.duration|human_duration }})
+    </ul>
+  </div>
+  <div class="col-md-6">
+    Other Info
+  </div>
+</div>
