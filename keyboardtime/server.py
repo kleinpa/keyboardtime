@@ -27,38 +27,6 @@ class Root(object):
   }
 
   @cherrypy.expose
-  def data(self, start=None, end=None):
-    class ForegroundEncoder(json.JSONEncoder):
-      def default(self, obj):
-          if isinstance(obj, decimal.Decimal):
-              return float(obj)
-          if isinstance(obj, db.ForegroundApplication):
-              return {
-                'start': obj.start,
-                'duration': obj.duration,
-                'application': obj.application,
-                'activeness': obj.activeness,
-              }
-          if isinstance(obj, datetime.datetime):
-            return obj.isoformat()+"Z"
-
-              #<sqlalchemy.orm.query.Query object at 0x04821DD0
-          # Let the base class default method raise the TypeError
-          return json.JSONEncoder.default(self, obj)
-
-    with db.session_scope() as s:
-      xs = s.query(db.ForegroundApplication)
-      if start:
-        start_dt = datetime.datetime.utcfromtimestamp(int(start))
-        xs = xs.filter(db.ForegroundApplication.start >= start_dt)
-
-      if end:
-        end_dt = datetime.datetime.utcfromtimestamp(int(end))
-        xs = xs.filter(db.ForegroundApplication.start <= end_dt)
-
-      return json.dumps(xs.all(), cls=ForegroundEncoder)
-
-  @cherrypy.expose
   def data_days(self):
     class ForegroundEncoder(json.JSONEncoder):
       def default(self, obj):
