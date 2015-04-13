@@ -59,7 +59,7 @@ class Root(object):
       return json.dumps(xs.all(), cls=ForegroundEncoder)
 
   @cherrypy.expose
-  def days(self):
+  def data_days(self):
     class ForegroundEncoder(json.JSONEncoder):
       def default(self, obj):
           if isinstance(obj, decimal.Decimal):
@@ -84,7 +84,7 @@ class Root(object):
       return json.dumps(xs.all(), cls=ForegroundEncoder)
 
   @cherrypy.expose
-  def info(self):
+  def data_info(self):
     return json.dumps(software_info.info)
 
   # Serve index.html for all pages to make angular routing easier

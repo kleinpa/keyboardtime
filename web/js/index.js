@@ -3,8 +3,8 @@
   'use strict';
   angular.module('main', ['ngRoute'])
     .controller('CtrlMain', function ($scope, $http, $interval) {
-      $http.get('/info').success(function (x) { $scope.info = x; });
-      $http.get('/days').success(function (xs) {
+      $http.get('/data_info').success(function (x) { $scope.info = x; });
+      $http.get('/data_days').success(function (xs) {
         $scope.days = _.map(xs, function(x){
           return {
             date: x[0],
