@@ -1,8 +1,8 @@
-<div ng-repeat="d in days" class="row">
+<div ng-repeat="d in days" class="row overview-day">
   <a href="/detail/{{ d.date }}">
     <div class="col-xs-12">
     <h2>{{ d.date }}</h2>
-    {{ d.duration|human_duration }},
+    {{ d.duration|human_duration }}
     from {{ d.start|human_time }}
     to {{ d.end|human_time }}
     <day-summary data=d>

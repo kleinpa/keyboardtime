@@ -14,7 +14,7 @@ from keyboardtime import db
 
 def get_app_root():
   p = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
-  if hasattr(sys,"frozen") and sys.frozen in ("windows_exe", "console_exe"):
+  if hasattr(sys, "frozen", None) in ("windows_exe", "console_exe"):
     p=os.path.abspath(os.path.dirname(os.path.abspath(sys.executable)))
   return p
 
