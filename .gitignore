@@ -1,9 +1,8 @@
-*.pyc
-dist
+*.bmp
+*.py[cod]
+*.msi
 *.wixobj
 *.wixpdb
-*.msi
-setup.log
-setup.log.full
-*.wxs
+/dist
+/dist.wxs
 .idea

@@ -1,0 +1,9 @@
+__pycache__
+.git
+*.bmp
+*.msi
+*.py[cod]
+/build
+/install/docker-build.bat
+/Dockerfile
+/install/dist.wxs

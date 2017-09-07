@@ -4,6 +4,7 @@ import json
 import os
 import sys
 
+import pkg_resources
 import cherrypy
 import dateutil.parser
 import sqlalchemy
@@ -13,15 +14,12 @@ from keyboardtime import software_info
 from keyboardtime import db
 
 def get_app_root():
-  p = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
-  if hasattr(sys, "frozen", None) in ("windows_exe", "console_exe"):
-    p=os.path.abspath(os.path.dirname(os.path.abspath(sys.executable)))
-  return p
+  return os.path.abspath(os.path.dirname(__file__))
 
 class Root(object):
   _cp_config = {
     'tools.staticdir.on' : True,
-    'tools.staticdir.root' : os.path.join(get_app_root(), 'web'),
+    'tools.staticdir.root' : pkg_resources.resource_filename('keyboardtime', 'web'),
     'tools.staticdir.dir' : '',
     'tools.staticdir.index' : 'index.html',
     'environment': 'embedded'

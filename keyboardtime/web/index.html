@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html ng-app="main" ng-controller="CtrlMain">
+<head>
+  <title ng-bind="info.name"></title>
+  <base href="/">
+  <link rel="stylesheet" type="text/css" href="/vendor/bootstrap-3.2.0.min.css">
+  <link rel="stylesheet" type="text/css" href="/css/style.css">
+  <script type="text/javascript" src="/vendor/angular-1.3.15.min.js"></script>
+  <script type="text/javascript" src="/vendor/angular-route-1.3.15.min.js"></script>
+  <script type="text/javascript" src="/vendor/d3-3.5.5.min.js"></script>
+  <script type="text/javascript" src="/vendor/moment-2.10.2.min.js"></script>
+  <script type="text/javascript" src="/vendor/lodash-3.6.0.min.js"></script>
+  <script type="text/javascript" src="/js/index.js"></script>
+</head>
+<body>
+  <div class="container-fluid">
+  <div class="row header">
+    <div class="col-xs-12 ">
+      <a href="/">
+        <h1 title="{{ info.description }} &#10; {{ info.version }} &#10; {{ info.copyright }}">
+          <img src="favicon.ico"> {{ info.name }}
+        </h1>
+      </a>
+    </div>
+  </div>
+  <div ng-view></div>
+</body>
+</html>

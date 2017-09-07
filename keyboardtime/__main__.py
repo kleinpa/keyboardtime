@@ -50,7 +50,7 @@ def run():
         log_action([foreground.window_name(), foreground.get_idle_duration()])
         time.sleep(.1)
 
-if __name__ == '__main__':
+def cli():
     parser = argparse.ArgumentParser(
         description='{description}.'.format(**software_info.info))
     parser.add_argument('--version', action='version',
@@ -60,7 +60,7 @@ if __name__ == '__main__':
     mode.add_argument('-s', '--http', help='only run http server', action='store_true')
     mode.add_argument('-l', '--logger', help='only run foreground logger', action='store_true')
 
-    parser.add_argument('-p', '--port', help='only run http server', type=int)
+    parser.add_argument('-p', '--port', help='specify server port', type=int)
 
     args = parser.parse_args()
 
@@ -69,3 +69,6 @@ if __name__ == '__main__':
 
     if not args.http:
         run()
+
+if __name__ == '__main__':
+    cli()

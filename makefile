@@ -1,38 +1,39 @@
 
 SRC_FILES := db.py foreground.py main.py schema.py setup.py software_info.py
 SI_CANDLE_ARGS := $(shell python keyboardtime\software_info.py --candle)
-SI_NAME := $(shell python keyboardtime\software_info.py --value name)
-SI_EXE := $(shell python keyboardtime\software_info.py --value name)
+SI_EXE := $(shell python keyboardtime\software_info.py --value exe)
 SI_VERSION := $(shell python keyboardtime\software_info.py --value version)
 
-MSI_NAME := $(SI_NAME)\ $(SI_VERSION)
-WIXEXTENSIONS := -ext WixUIExtension -ext WixUtilExtension
+MSI_NAME = $(SI_EXE)-$(SI_VERSION).msi
+BUILD_DIR := build/exe.win32-3.6
 
-PYTHON = python3
+WIXFLAGS := -ext WixUIExtension -ext WixUtilExtension
+WIXLIGHTFLAGS := -sice:ICE61 -sice:ICE69
 
-default: version dist/$(SI_EXE).exe
+PYTHON = python
+IMAGEMAGICK = magick
+WIXHEAT = "$(WIX)/bin/heat"
+WIXLIGHT = "$(WIX)/bin/light"
+WIXCANDLE = "$(WIX)/bin/candle"
 
-install: version $(MSI_NAME).msi
+default: $(BUILD_DIR)\$(SI_EXE).exe
 
-dist/$(SI_EXE).exe: *.py web
-	$(PYTHON) setup.py py2exe
+install: $(MSI_NAME)
 
-.PHONY: version
-version: keyboardtime\\software_info.py
-	@ $(PYTHON) keyboardtime\\software_info.py -p -o "dist/version.dat"
+$(BUILD_DIR)/$(SI_EXE).exe: *.py keyboardtime/web
+	$(PYTHON) setup.py build
 
-dist/version.dat: |version
+%.bmp: %.svg
+	$(IMAGEMAGICK) "$<" "$@"
 
-dist: dist/$(SI_EXE).exe dist/version.dat
+install/dist.wxs: $(BUILD_DIR)/$(SI_EXE).exe
+	$(WIXHEAT) dir $(BUILD_DIR) -ag -cg DistFiles -dr INSTALLFOLDER -indent 2 -sfrag -sreg -srd -var var.DistSrc -out "$@"
 
-dist.wxs: dist web
-	heat dir dist -ag -cg Files -dr INSTALLDIR -indent 2 -sfrag -srd -var var.DistSrc -out "$@"
+install/%.wixobj: install/%.wxs
+	$(WIXCANDLE) -nologo $(WIXFLAGS) "$<" $(SI_CANDLE_ARGS) -dDistSrc=$(BUILD_DIR) -out "$@"
 
-%.wixobj: %.wxs dist/version.dat
-	candle -nologo $(WIXEXTENSIONS) "$<" $(SI_CANDLE_ARGS) -dDistSrc=dist
-
-$(MSI_NAME).msi: install.wixobj dist.wixobj
-	light -nologo $(WIXEXTENSIONS) install.wixobj dist.wixobj -out "$@"
+$(MSI_NAME): install/Product.wixobj install/SimpleUI.wixobj install/dist.wixobj install/wixui-banner.bmp install/wixui-dialog.bmp
+	$(WIXLIGHT) -nologo $(WIXFLAGS) $(WIXLIGHTFLAGS) install/Product.wixobj install/SimpleUI.wixobj install/dist.wixobj -out "$@"
 
 clean :
 	-rmdir /S /Q dist

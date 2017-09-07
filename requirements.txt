@@ -1,5 +1,12 @@
-appdirs
-sqlalchemy
-py2exe
-cherrypy
-python-dateutil
+appdirs==1.4.3
+cheroot==5.8.3
+CherryPy==11.0.0
+cx-Freeze==5.0.2
+packaging==16.8
+portend==2.1.2
+pypiwin32==220
+python-dateutil==2.6.1
+pytz==2017.2
+six==1.10.0
+SQLAlchemy==1.1.14
+tempora==1.9

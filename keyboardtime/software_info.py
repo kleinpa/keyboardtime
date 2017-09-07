@@ -12,55 +12,13 @@ info['author'] = "Peter Klein"
 info['company_name'] = "Peter Klein"
 info['copyright'] = "{0} {1}".format(datetime.datetime.now().year, info['company_name'])
 
+info['upgrade_code'] = "92891133-407C-43FE-874C-D28945F58DEE"
+
 info['port'] = 63874
 
-def get_version_data():
-    def is_py2exe():
-        return hasattr(sys,"frozen") and sys.frozen in ("windows_exe", "console_exe")
-    def git_describe():
-        """Returns a dict representing the current version:
-            - a: Major version; from git tag
-            - b: Minor version; from git tag
-            - add: commits since minor version
-            - hash: current commit hash if clean, otherwise 1
-            - dirty: 1 if the working tree has changes, otherwise 0"""
-
-        import subprocess
-        import os
-        import re
-
-        os.environ["PATH"] += os.pathsep + "C:\\cygwin\\bin"
-        os.environ["PATH"] += os.pathsep + "C:\\cygwin64\\bin"
-
-        try:
-            st = subprocess.check_output("git.exe describe --tags --dirty --match \"v*\"").decode('utf8')
-            m = re.match(r"v(?P<a>\d+)\.(?P<b>\d+)(?:-(?P<add>\d+)-g(?P<hash>[0-9a-f]{7}))?(?P<dirty>-dirty)?", st)
-            d = m.groupdict()
-            d['dirty'] = datetime.datetime.now().strftime("99%d%H%M") if d['dirty'] else 0
-            d['add'] = d['add'] or 0
-            d['hash'] = (d['hash'] or 0) if not d['dirty'] else d['dirty']
-            return d
-        except Exception:
-            return None
-    def unpickle_version():
-        try:
-            import pickle
-            root = os.path.abspath(os.path.dirname(os.path.abspath(sys.executable)))
-            with open(os.path.join(root, 'version.dat'), 'rb') as f:
-                return pickle.load(f)
-        except Exception:
-            return None
-
-    default_version = {'a':'0','b':'0','add':'0','dirty':'0','hash':'0'}
-
-    if is_py2exe():
-        return unpickle_version() or default_version
-    else:
-        return git_describe() or default_version
-
-version_data = get_version_data()
-info['version'] = "{a}.{b}.{add}.{hash}".format(**version_data)
-info['version4'] = "{a}.{b}.{add}.{dirty}".format(**version_data)
+version_data = (1, 7, 0)
+info['version'] = "{0}.{1}.{2}".format(*version_data)
+info['version4'] = "{0}.{1}.{2}.0".format(*version_data)
 
 # Some utility functions for accessing data from outside python
 if __name__ == '__main__':
@@ -69,7 +27,6 @@ if __name__ == '__main__':
     group = parser.add_mutually_exclusive_group(required=True)
     group.add_argument('-v', '--value', help='gets the value associated with the variable VAR', metavar="VAR")
     group.add_argument('-c', '--candle', help='display software info formatted as candle arguments', action='store_true')
-    group.add_argument('-p', '--pickle', help='writes a pickled version info', action='store_true')
     parser.add_argument('-o', help='output file for pickled version info', metavar="FILE")
     args = parser.parse_args()
 
@@ -77,17 +34,3 @@ if __name__ == '__main__':
         print("".join([" -dsi_{0}=\"{1}\"".format(*x) for x in info.items()]))
     if args.value:
         print(info.get(args.value, None))
-    if args.pickle:
-        import pickle
-        if os.path.exists(args.o or "version.dat"):
-            with open(args.o or "version.dat", 'rb') as f:
-                old_version_data = pickle.load(f)
-        else:
-            old_version_data = False
-        version_data = get_version_data()
-        if version_data != old_version_data:
-            if not os.path.exists(os.path.dirname(args.o or "version.dat")):
-                os.makedirs(os.path.dirname(args.o or "version.dat"))
-            with open(args.o or "version.dat", 'wb') as f:
-                pickle.dump(version_data, f)
-                print("Version data written to '{0}'".format(args.o or "version.dat"))

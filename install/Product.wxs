@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi"
+     xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
+    <Product Id="*" Name="$(var.si_name) $(var.si_version)" Language="1033" Version="$(var.si_version4)" Manufacturer="$(var.si_company_name)" UpgradeCode="$(var.si_upgrade_code)">
+        <Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
+
+        <MajorUpgrade AllowSameVersionUpgrades="yes" DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
+        <Media Id='1' Cabinet='product.cab' EmbedCab='yes' CompressionLevel="high" />
+
+        <Feature Id="ProductFeature" Title="$(var.si_name)" Level="1">
+            <ComponentGroupRef Id="DistFiles" />
+            <ComponentRef Id="AutoStart" />
+            <ComponentRef Id="ApplicationShortcut" />
+        </Feature>
+
+        <Icon Id="icon.ico" SourceFile="resources/app.ico"/>
+        <Property Id="ARPPRODUCTICON" Value="icon.ico" />
+
+        <UIRef Id="SimpleUI" />
+        <WixVariable Id="WixUIBannerBmp" Value="wixui-banner.bmp" />
+        <WixVariable Id="WixUIDialogBmp" Value="wixui-dialog.bmp" />
+    </Product>
+
+    <Fragment>
+        <Directory Id="TARGETDIR" Name="SourceDir">
+            <Directory Id="ProgramFilesFolder">
+                <Directory Id="INSTALLFOLDER" Name="$(var.si_name)" />
+            </Directory>
+            <Directory Id="ProgramMenuFolder">
+                <Directory Id="ApplicationProgramsFolder" Name="$(var.si_description)"/>
+            </Directory>
+        </Directory>
+    </Fragment>
+
+    <Fragment>
+        <DirectoryRef Id="ApplicationProgramsFolder">
+            <Component Id="ApplicationShortcut" Guid="5FA3ACCF-0B8B-4CDE-A5F8-ED5068C344E2">
+                <IniFile Id="UrlShortcutURL" Action="addLine"
+                    Directory="ApplicationProgramsFolder" Name="$(var.si_description).url"
+                    Section="InternetShortcut" Key="URL" Value="http://localhost:$(var.si_port)/" />
+                <IniFile Id="UrlShortcutHotKey" Action="addLine"
+                    Directory="ApplicationProgramsFolder" Name="$(var.si_description).url"
+                    Section="InternetShortcut" Key="HotKey" Value="0" />
+                <IniFile Id="UrlShortcutIconFile" Action="addLine"
+                    Directory="ApplicationProgramsFolder" Name="$(var.si_description).url"
+                    Section="InternetShortcut" Key="IconFile" Value="[#filCE37ABEEEADFEEBBB17D516CB71EF492]" />
+                <IniFile Id="UrlShortcutIconIndex" Action="addLine"
+                    Directory="ApplicationProgramsFolder" Name="$(var.si_description).url"
+                    Section="InternetShortcut" Key="IconIndex" Value="0" />
+                <IniFile Id="UrlShortcutProp3" Action="addLine"
+                    Directory="ApplicationProgramsFolder" Name="$(var.si_description).url"
+                    Section="{000214A0-0000-0000-C000-000000000046}" Key="Prop3" Value="19,2" />
+                <IniFile Id="UrlShortcutIDList" Action="addLine"
+                    Directory="ApplicationProgramsFolder" Name="$(var.si_description).url"
+                    Section="InternetShortcut" Key="IDList" Value="[~]" />
+                <RemoveFolder Id="ApplicationProgramsFolder" On="uninstall"/>
+                <RegistryValue Root="HKCU" Key="Software\$(var.si_company_name)\$(var.si_name)"
+                    Name="installed" Type="integer" Value="1" KeyPath="yes"/>
+            </Component>
+        </DirectoryRef>
+    </Fragment>
+
+    <Fragment>
+        <DirectoryRef Id='INSTALLFOLDER'>
+            <Component Id='AutoStart' Guid='9027B6C8-9B3B-4DD3-8610-8A72E6B52966'>
+                <RegistryValue Root="HKCU" Key="Software\Microsoft\Windows\CurrentVersion\Run"
+                    Type="string" Name="$(var.si_name)" Value="[#filCE37ABEEEADFEEBBB17D516CB71EF492]" />
+            </Component>
+        </DirectoryRef>
+        <Property Id="QtExecCmdLine" Value='"[WindowsFolder]\System32\taskkill.exe" /F /IM $(var.si_exe).exe'/>
+        <CustomAction Id="StartProgram" FileKey="filCE37ABEEEADFEEBBB17D516CB71EF492" ExeCommand="" Return="asyncNoWait" />
+        <CustomAction Id="StopProgram" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="immediate" Return="ignore"/>
+        <InstallExecuteSequence>
+            <Custom Action="StartProgram" After="InstallFinalize">NOT Installed</Custom>
+            <Custom Action='StopProgram' Before='InstallValidate'/>
+        </InstallExecuteSequence>
+    </Fragment>
+</Wix>
